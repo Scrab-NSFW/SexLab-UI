@@ -29,12 +29,15 @@ class Main extends MovieClip
 		// 	ShowMessage("test 123 very long test because I want to see how it");
 
 		control.newStage(9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+		sliders.setSliderCount(5);
+		sliders.setNthSliderName(0, "Long name");
 		
 		setTimeout(Delegate.create(this, test2), 10 * 1000);
 	}
 
 	private function test2() {
 		control.newStage(4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+		sliders.setSliderCount(2);
 	}
 
 	public function setLocation(xpos_prc: Number, ypos_prc: Number, rot: Number, xscale: Number, yscale: Number): Void

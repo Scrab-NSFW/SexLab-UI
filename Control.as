@@ -40,7 +40,10 @@ class Control extends MovieClip
 		timer._x = localStageTimer.x;
 		timer._y = localStageTimer.y;
 
-		var localSpeedControl = { x: farRight * 0.98 - speedControl._width, y: farDown * 0.96 - speedControl._height / 2};
+		var localSpeedControl = { 
+			x: farRight * 0.98 - speedControl._width / 2 + speedControl.spdUp._width * 0.25,
+			y: farDown * 0.96 - speedControl._height * 0.25
+		};
 		globalToLocal(localSpeedControl);
 		speedControl._x = localSpeedControl.x;
 		speedControl._y = localSpeedControl.y;

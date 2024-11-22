@@ -1,5 +1,6 @@
 ﻿class Sliders extends MovieClip
 {
+	static private var SLIDER_SCALE: Number = 100; // Using 65 when on 1280x720
 	static private var MAX_SLIDERS: Number = 5;
 	static private var SLIDER_NAME: String = "Slider";
 
@@ -30,8 +31,6 @@
 		globalToLocal(rootCoordinates);
 		background._x = rootCoordinates.x;
 		background._y = rootCoordinates.y - background._height;
-
-		setSliderCount(5);
 	}
 
 	/* API */
@@ -41,8 +40,8 @@
 		if (count > instanceCounter) {
 			for (var i = instanceCounter; i < count; i++) {
 				var slider = attachMovie(SLIDER_NAME, SLIDER_NAME + i, getNextHighestDepth(), {
-					_xscale: 65,
-					_yscale: 65
+					_xscale: SLIDER_SCALE,
+					_yscale: SLIDER_SCALE
 				});
 				sliders.push(slider);
 			}
@@ -54,6 +53,15 @@
 		}
 		instanceCounter = count;
 		positionSliders();
+	}
+
+	public function setNthSliderName(n, name)
+	{
+		if (n < 0 || n >= sliders.length) {
+			trace("Invalid slider index");
+			return;
+		}
+		sliders[n].setName(name);
 	}
 
 	/* PRIVATE */
