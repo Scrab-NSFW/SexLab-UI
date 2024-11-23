@@ -1,4 +1,4 @@
-﻿class Details extends MovieClip
+﻿class Settings extends MovieClip
 {
 
 
