@@ -23,7 +23,6 @@
 
 	public function onLoad()
 	{
-		trace("Sliders loaded");
 		farLeft = 0;
 		farDown = Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y;
 		
@@ -34,9 +33,9 @@
 	}
 
 	/* API */
-	public function setSliderCount(count)
+	public function setSliders(/* args */)
 	{
-		count = Math.min(MAX_SLIDERS, Math.max(count, 0));
+		var count = Math.min(MAX_SLIDERS, Math.max(arguments.length, 0));
 		if (count > instanceCounter) {
 			for (var i = instanceCounter; i < count; i++) {
 				var slider = attachMovie(SLIDER_NAME, SLIDER_NAME + i, getNextHighestDepth(), {
@@ -51,17 +50,32 @@
 			}
 			sliders.splice(count, instanceCounter - count);
 		}
+		for (var i = 0; i < count; i++) {
+			sliders[i].setName(arguments[i].name);
+			sliders[i].id = arguments[i].id;
+		}
 		instanceCounter = count;
 		positionSliders();
 	}
 
-	public function setNthSliderName(n, name)
+	public function updateSliderPct(id: Number, enj: Number)
 	{
-		if (n < 0 || n >= sliders.length) {
-			trace("Invalid slider index");
-			return;
+		for (var i = 0; i < sliders.length; i++) {
+			if (sliders[i].id == id) {
+				sliders[i].updateMeterPercent(enj);
+				break;
+			}
 		}
-		sliders[n].setName(name);
+	}
+
+	public function setSliderPct(id: Number, enj: Number)
+	{
+		for (var i = 0; i < sliders.length; i++) {
+			if (sliders[i].id == id) {
+				sliders[i].setMeterPercent(enj);
+				break;
+			}
+		}
 	}
 
 	/* PRIVATE */

@@ -3,6 +3,8 @@ import com.greensock.easing.*;
 
 class Slider extends MovieClip
 {
+  private static var HUNDRED_PCT_THRESH = 80;
+
   /* STAGE */
   public var mask: MovieClip;
   public var namecard: MovieClip;
@@ -24,26 +26,26 @@ class Slider extends MovieClip
 
   public function onLoad()
   {
-    trace("Slider loaded");
-    separator._x = mask._x + __precent * 80;
+    separator._x = mask._x + __precent * HUNDRED_PCT_THRESH;
   }
 
   /* API */
   public function setName(name)
   {
-    trace(name);
     namecard.tf1.text = name;
   }
 
-  public function setMeterPercent(percent)
+  public function setMeterPercent(enjoyment: Number)
 	{
+    var percent = getMeterPctFromEnjoyment(enjoyment);
 		timeLine.clear();
 		percent = Math.min(100, Math.max(percent, 0));
 		mask._width = __precent * percent;
 	}
 
-	public function updateMeterPercent(percent)
+	public function updateMeterPercent(enjoyment: Number)
 	{
+    var percent = getMeterPctFromEnjoyment(enjoyment);
 		if (!timeLine.isActive())
 		{
 			timeLine.clear();
@@ -54,4 +56,18 @@ class Slider extends MovieClip
 		timeLine.to(mask, 1, {_width: __precent * percent});
 		timeLine.play();
 	}
+
+  /* PRIVATE */
+  private function getMeterPctFromEnjoyment(enjoyment: Number): Number
+  {
+    var ret;
+    if (enjoyment <= 100) {
+      ret = (enjoyment / 100) * HUNDRED_PCT_THRESH;
+    } else {
+      var added = Math.pow(1.25 * (enjoyment - 100), 0.6) * 1.4;
+      ret = HUNDRED_PCT_THRESH + Math.min(added, 100 - HUNDRED_PCT_THRESH);
+    }
+    trace("Slider::getMeterPctFromEnjoyment: " + enjoyment + " -> " + ret);
+    return Math.min(100, Math.max(ret, 0));
+  }
 }

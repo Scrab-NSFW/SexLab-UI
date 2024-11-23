@@ -9,7 +9,9 @@ class Messages extends MovieClip
 
 	/* VARIABLES */
 	static var MAX_SHOWN: Number = 8;
-	static var BLEND_TIME: Number = 0.55;
+	static var BLEND_TIME: Number = 0.3;
+	static var BLEND_OUT_TIME: Number = 0.5;
+	static var DISPLAY_TIME: Number = 3.5;
 	static var InstanceCounter: Number = 0;
 
 	var MessageArray: Array;
@@ -44,7 +46,6 @@ class Messages extends MovieClip
 		if (iAnimating > 0 || MessageArray.length == 0 || ShownCount >= Messages.MAX_SHOWN) {
 			return;
 		}
-		trace("ShowMessage");
 		var activeMessage = null;
 		for (var i = 0; i < ActiveMessages.length; i++) {
 			if (ActiveMessages[i].ready) {
@@ -87,7 +88,7 @@ class Messages extends MovieClip
 		__this.iAnimating--;
 
 		var timeline = activeMessage.timeline;
-		timeline.to(activeMessage.clip, 3.3, {}).to(activeMessage.clip, 0.6, {
+		timeline.to(activeMessage.clip, DISPLAY_TIME, {}).to(activeMessage.clip, BLEND_OUT_TIME, {
 			_alpha: 0,
 			_x: activeMessage.clip._x + activeMessage.clip._width,
 			onComplete: __this.onCreateEndEnd,
