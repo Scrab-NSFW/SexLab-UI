@@ -28,8 +28,6 @@
 		
 		rootCoordinates = { x: farLeft, y: farDown };
 		globalToLocal(rootCoordinates);
-		background._x = rootCoordinates.x;
-		background._y = rootCoordinates.y - background._height;
 	}
 
 	/* API */

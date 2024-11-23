@@ -1,11 +1,14 @@
-﻿import gfx.io.GameDelegate;
+﻿import Shared.GlobalFunc;
+import gfx.io.GameDelegate;
 import gfx.utils.Delegate;
+import gfx.ui.InputDetails;
+import gfx.ui.NavigationCode;
 
 class Main extends MovieClip
 {
 	/* STAGE */
 	var background:MovieClip;
-	var details:MovieClip;
+	var settings:MovieClip;
 	var messages:MovieClip;
 	var sliders:MovieClip;
 	var control:MovieClip;
@@ -21,12 +24,17 @@ class Main extends MovieClip
 	{
 		_global.gfxExtensions = true;
 
-		setTimeout(Delegate.create(this, test), 2000);
+		setLocation(settings, 0, 0)
+		setLocation(messages, 1, 0)
+		setLocation(sliders, 0, 1)
+		setLocation(control, 1, 1)
+
+		// setTimeout(Delegate.create(this, test), 2000);
 	}
 
 	private function test() {
 		for (var i = 0; i < 10; i++)
-			ShowMessage("test 123 very long test because I want to see how it");
+			ShowMessage("test 123 very long test because I want to see how it 456 looks when its long, like very long 987");
 
 		control.newStage(9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 		setSliders(
@@ -51,7 +59,7 @@ class Main extends MovieClip
 		);
 	}
 
-	public function setLocation(xpos_prc: Number, ypos_prc: Number, rot: Number, xscale: Number, yscale: Number): Void
+	public static function setLocation(obj: MovieClip, xpos_prc: Number, ypos_prc: Number, rot: Number, xscale: Number, yscale: Number): Void
 	{
 			var minXY: Object = {x: Stage.visibleRect.x + Stage.safeRect.x, y: Stage.visibleRect.y + Stage.safeRect.y};
 			var maxXY: Object = {x: Stage.visibleRect.x + Stage.visibleRect.width - Stage.safeRect.x, y: Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y};
@@ -62,15 +70,15 @@ class Main extends MovieClip
 			//                    |    STAGE    |
 			//  (minXY.x, maxXY.y)|_____________|(maxXY.x, maxXY.y)
 
-			this._x = maxXY.x * xpos_prc;
-			this._y = maxXY.y * ypos_prc;
+			obj._x = minXY.x + maxXY.x * xpos_prc;
+			obj._y = minXY.y + maxXY.y * ypos_prc;
 
 			if (rot != undefined)
-					this._rotation = rot;
+					obj._rotation = rot;
 			if (xscale != undefined)
-					this._xscale = xscale;
+					obj._xscale = xscale;
 			if (yscale != undefined)
-					this._yscale = yscale;
+					obj._yscale = yscale;
 	}
 
 	public function onEnterFrame()
@@ -98,6 +106,19 @@ class Main extends MovieClip
 	public function setSliderPct(id: Number, enj: Number)
 	{
 		sliders.setSliderPct(id, enj);
+	}
+
+	/* GFX */
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		if (!GlobalFunc.IsKeyPressed(details))
+			return false;
+		if (control.handleInput(details, pathToFocus))
+			return true;
+		if (settings.handleInput(details, pathToFocus)) {
+			return true;
+		}
+		return false;
 	}
 
 }
