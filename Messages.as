@@ -9,7 +9,7 @@ class Messages extends MovieClip
 
 	/* VARIABLES */
 	static var MAX_SHOWN: Number = 8;
-	static var BLEND_TIME: Number = 0.3;
+	static var BLEND_TIME: Number = 0.35;
 	static var BLEND_OUT_TIME: Number = 0.5;
 	static var DISPLAY_TIME: Number = 3.5;
 	static var InstanceCounter: Number = 0;
@@ -38,9 +38,9 @@ class Messages extends MovieClip
 
 	public function onLoad()
 	{
-		ySpacing = (Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y) / 50;
+		ySpacing = Stage.visibleRect.height / 50;
 	}
-	
+
 	public function Update()
 	{
 		if (iAnimating > 0 || MessageArray.length == 0 || ShownCount >= Messages.MAX_SHOWN) {
@@ -59,7 +59,11 @@ class Messages extends MovieClip
 		activeMessage.ready = false;
 		iAnimating = 2;
 
-		var newClip = attachMovie("MessageText", "Text" + Messages.InstanceCounter++, getNextHighestDepth(), {_x: background._x, _y: background._y, _alpha: 0});
+		var newClip = attachMovie("MessageText", "Text" + Messages.InstanceCounter++, getNextHighestDepth(), {
+			_x: background._x, 
+			_y: background._y, 
+			_alpha: 0
+		});
 		activeMessage.clip = newClip;
 		TweenLite.to(newClip, BLEND_TIME, {
 			_alpha: 100, 
@@ -67,6 +71,8 @@ class Messages extends MovieClip
 			onComplete: onCreateEnd,
 			onCompleteParams: [this, activeMessage]
 		});
+		newClip.tf1.autoSize = "left";
+		newClip.tf1.wordWrap = true;
 		newClip.tf1.html = true;
 		newClip.tf1.textAutoSize = "shrink";
 		newClip.tf1.htmlText = MessageArray.shift();
