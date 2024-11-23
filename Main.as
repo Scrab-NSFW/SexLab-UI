@@ -21,7 +21,7 @@ class Main extends MovieClip
 	{
 		_global.gfxExtensions = true;
 
-		// setTimeout(Delegate.create(this, test), 2000);
+		setTimeout(Delegate.create(this, test), 2000);
 	}
 
 	private function test() {
@@ -29,14 +29,13 @@ class Main extends MovieClip
 			ShowMessage("test 123 very long test because I want to see how it");
 
 		control.newStage(9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-		sliders.setSliders(
+		setSliders(
 			{name: "Slider 1", id: 0},
 			{name: "Slider 2", id: 1},
 			{name: "Slider 3", id: 2},
 			{name: "Slider 4", id: 3},
 			{name: "Slider 5", id: 4}
 		);
-		sliders.setNthSliderName(0, "Long name");
 		
 		setTimeout(Delegate.create(this, test2), 10 * 1000);
 	}
@@ -46,7 +45,7 @@ class Main extends MovieClip
 			ShowMessage("test 456");
 
 		control.newStage(4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-		sliders.setSliders(
+		setSliders(
 			{name: "YAY", id: 7},
 			{name: "HAHAHAHAHA4", id: 6}
 		);
@@ -88,7 +87,7 @@ class Main extends MovieClip
 	/* SLIDERS */
 	public function setSliders(/* args */)
 	{
-		sliders.setSliders(arguments);
+		sliders.setSliders.apply(sliders, arguments);
 	}
 
 	public function updateSliderPct(id: Number, enj: Number)

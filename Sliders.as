@@ -36,6 +36,7 @@
 	public function setSliders(/* args */)
 	{
 		var count = Math.min(MAX_SLIDERS, Math.max(arguments.length, 0));
+		trace("Setting " + count + " sliders");
 		if (count > instanceCounter) {
 			for (var i = instanceCounter; i < count; i++) {
 				var slider = attachMovie(SLIDER_NAME, SLIDER_NAME + i, getNextHighestDepth(), {
@@ -53,6 +54,7 @@
 		for (var i = 0; i < count; i++) {
 			sliders[i].setName(arguments[i].name);
 			sliders[i].id = arguments[i].id;
+			trace("Setting slider " + i + " to " + arguments[i].name + " with id " + arguments[i].id);
 		}
 		instanceCounter = count;
 		positionSliders();

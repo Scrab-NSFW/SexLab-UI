@@ -27,6 +27,7 @@ class Slider extends MovieClip
   public function onLoad()
   {
     separator._x = mask._x + __precent * HUNDRED_PCT_THRESH;
+    setMeterPercent(0);
   }
 
   /* API */
