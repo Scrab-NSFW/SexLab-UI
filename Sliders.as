@@ -10,8 +10,6 @@
 	/* VARIABLES */
 	private var instanceCounter: Number;
 	private var sliders: Array;
-	private var farLeft: Number;
-	private var farDown: Number;
 	private var rootCoordinates: Object;
 
 	/* INIT */
@@ -23,10 +21,10 @@
 
 	public function onLoad()
 	{
-		farLeft = 0;
-		farDown = Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y;
-		
-		rootCoordinates = { x: farLeft, y: farDown };
+		rootCoordinates = {
+			x: 0,
+			y: Stage.visibleRect.y + Stage.visibleRect.height - Stage.safeRect.y 
+		};
 		globalToLocal(rootCoordinates);
 	}
 
