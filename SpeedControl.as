@@ -1,8 +1,5 @@
-﻿
-class SpeedControl extends MovieClip
+﻿class SpeedControl extends MovieClip
 {
-	private static var SPEED_INTERVAL: Number = 0.5;
-
 	/* STAGE */
 	var spdUp: MovieClip;
 	var spdDown: MovieClip;
@@ -12,24 +9,36 @@ class SpeedControl extends MovieClip
 	var spdCounter: TextField;
 
 	/* VARIABLES */
-
+	var speedValues: Array = [0.5, 0.75, 1, 1.25, 1.5, 2, 3];
+	var speedIdx = 3;
 
 	/* FUNCTIONS */
 	public function SpeedControl()
 	{
 		spdUpBtn.onRelease = function() {
 			trace("SpeedControl::spdUpBtn.onRelease");
-			skse.SendModEvent("SL_SpeedChange", "", SPEED_INTERVAL);
+			_parent.changeSpeed(true);
 		};
 
 		spdDownBtn.onRelease = function() {
 			trace("SpeedControl::spdDownBtn.onRelease");
-			skse.SendModEvent("SL_SpeedChange", "", -SPEED_INTERVAL);
+			_parent.changeSpeed(false);
 		};
 	}
 
 	public function setSpeedCounter(speed: Number)
 	{
-		spdCounter.text = speed.toString();
+		spdCounter.text = speed.toFixed(2);
+	}
+
+	public function changeSpeed(upOrDown: Boolean)
+	{
+		if (upOrDown) {
+			speedIdx++;
+		} else {
+			speedIdx--;
+		}
+		setSpeedCounter(speedValues[speedIdx]);
+		skse.SendModEvent("SL_SetSpeed", "", speedValues[speedIdx]);
 	}
 }

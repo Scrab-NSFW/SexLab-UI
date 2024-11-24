@@ -18,10 +18,11 @@ class Control extends MovieClip
 	private var stages: Array;
 	private var rootCoordinates: Object;
 	private var selectedStage: MovieClip;
+	private var __timerWidth: Number;
+	private var timerTimeLine: TimelineLite;
 
-	var __timerWidth: Number;
-	var timerTimeLine: TimelineLite;
-
+	public var speedUpKey: String = "E";
+	public var speedDownKey: String = "Q";
 
 	/* FUNCTIONS */
 	public function Control()
@@ -191,6 +192,12 @@ class Control extends MovieClip
 					return select(7);
 				case "9":
 					return select(8);
+				case speedUpKey:
+					speedControl.changeSpeed(true);
+					return true;
+				case speedDownKey:
+					speedControl.changeSpeed(false);
+					return true;
 				}
 			}
 		}
