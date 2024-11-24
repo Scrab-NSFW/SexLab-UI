@@ -8,7 +8,7 @@ class Messages extends MovieClip
 	var background: MovieClip;
 
 	/* VARIABLES */
-	static var MAX_SHOWN: Number = 8;
+	static var MAX_SHOWN: Number = 6;
 	static var BLEND_TIME: Number = 0.35;
 	static var BLEND_OUT_TIME: Number = 0.5;
 	static var DISPLAY_TIME: Number = 3.5;
