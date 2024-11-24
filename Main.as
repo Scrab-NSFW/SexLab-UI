@@ -29,14 +29,22 @@ class Main extends MovieClip
 		setLocation(sliders, 0, 1)
 		setLocation(control, 1, 1)
 
-		// setTimeout(Delegate.create(this, test), 2000);
+		setTimeout(Delegate.create(this, test), 2000);
 	}
 
 	private function test() {
 		for (var i = 0; i < 10; i++)
 			ShowMessage("test 123 very long test because I want to see how it 456 looks when its long, like very long 987");
 
-		control.newStage(9, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+		setStages(
+			7,
+			{name: "Stage 1", id: 1},
+			{name: "Stage 2", id: 2},
+			{name: "Stage 3", id: 3},
+			{name: "Stage 4", id: 4},
+			{name: "Stage 5", id: 5},
+			{name: "Stage 6", id: 6}
+		);
 		setSliders(
 			{name: "Slider 1", id: 0},
 			{name: "Slider 2", id: 1},
@@ -52,7 +60,6 @@ class Main extends MovieClip
 		for (var i = 0; i < 10; i++)
 			ShowMessage("test 456");
 
-		control.newStage(4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 		setSliders(
 			{name: "YAY", id: 7},
 			{name: "HAHAHAHAHA4", id: 6}
@@ -106,6 +113,17 @@ class Main extends MovieClip
 	public function setSliderPct(id: Number, enj: Number)
 	{
 		sliders.setSliderPct(id, enj);
+	}
+
+	/* CONTROL */
+	public function setStages(/* args */)
+	{
+		control.setStages.apply(control, arguments);
+	}
+
+	public function setSpeedCounter(speed: Number)
+	{
+		control.speedControl.setSpeedCounter(speed);
 	}
 
 	/* GFX */
