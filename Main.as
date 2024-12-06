@@ -3,6 +3,7 @@ import gfx.io.GameDelegate;
 import gfx.utils.Delegate;
 import gfx.ui.InputDetails;
 import gfx.ui.NavigationCode;
+import gfx.managers.FocusHandler;
 
 class Main extends MovieClip
 {
@@ -14,20 +15,24 @@ class Main extends MovieClip
 	var control:MovieClip;
 
 	/* VARIABLES */
+	var endSceneHotkey:Number = 35; // End
 
 	/* FUNCTIONS */
 	public function Main()
 	{
+		super();
+		_global.gfxExtensions = true;
+		FocusHandler.instance.setFocus(this, 0);
 	}
 
 	public function onLoad()
 	{
-		_global.gfxExtensions = true;
-
 		setLocation(settings, 0, 0)
 		setLocation(messages, 1, 0)
 		setLocation(sliders, 0, 1)
 		setLocation(control, 1, 1)
+
+		settings._visible = false;
 
 		// setTimeout(Delegate.create(this, test), 2000);
 	}
@@ -134,13 +139,22 @@ class Main extends MovieClip
 	/* GFX */
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		if (!GlobalFunc.IsKeyPressed(details))
-			return false;
-		if (control.handleInput(details, pathToFocus))
-			return true;
-		if (settings.handleInput(details, pathToFocus)) {
-			return true;
+		if (GlobalFunc.IsKeyPressed(details)) {
+			if (control.handleInput(details, pathToFocus))
+				return true;
+			if (settings.handleInput(details, pathToFocus))
+				return true;
+				// NavigationCode.BACK is backspace
+				// NavigationCode.TAB is tab & escape
+				// What is escape?
+			if (details.navEquivalent == NavigationCode.END) {
+				skse.SendModEvent("SL_EndScene", "", 0);
+				return true;
+			}
 		}
+		var nextClip = pathToFocus.shift();
+		if (nextClip && nextClip.handleInput(details, pathToFocus))
+			return true;
 		return false;
 	}
 

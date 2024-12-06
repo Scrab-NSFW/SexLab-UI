@@ -3,7 +3,6 @@ import com.greensock.TimelineLite;
 import com.greensock.easing.*;
 import gfx.ui.NavigationCode;
 import gfx.ui.InputDetails;
-import KeyMap
 
 class Control extends MovieClip
 {
@@ -62,7 +61,6 @@ class Control extends MovieClip
 
 	public function setStages(/* args */)
 	{
-		trace("Setting " + arguments.length + " stages");
 		var count = Math.max(arguments.length, 0);
 		if (count > instanceCounter) {
 			for (var i = instanceCounter; i < count; i++) {
@@ -89,8 +87,9 @@ class Control extends MovieClip
 				_alpha: 0,
 				ease: Quint.easeOut
 			});
+			var argText = arguments[i].name ? arguments[i].name : "$SL_NextStage";
 			stages[i]._y = rootCoordinates.y - stages[i]._height - distance_between_stages * i;
-			stages[i].tf1.text = (i + 1) + "} " + arguments[i].name;
+			stages[i].tf1.text = (i + 1) + "} " + argText;
 			stages[i].id = arguments[i].id;
 			stages[i].onRollOver = function() {
 				_parent.selectStage(this);
@@ -118,22 +117,27 @@ class Control extends MovieClip
 	/* GFX */
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
+		trace("Control.handleInput: " + details.code + ", " + details.navEquivalent + ", " + details.value + ", " + details.controllerIdx + ", " + details.type);
 		switch (details.navEquivalent) {
+		case NavigationCode.LEFT:
+			speedControl.changeSpeed(false);
+			return true;
 		case NavigationCode.RIGHT:
-		case NavigationCode.PAGE_DOWN:
+			speedControl.changeSpeed(true);
+			return true;
+		case NavigationCode.PAGE_UP:
 			if (stages.length > 0) {
 				selectStage(stages[stages.length - 1]);
 				return true;
 			}
 			break;
-		case NavigationCode.LEFT:
-		case NavigationCode.PAGE_UP:
+		case NavigationCode.PAGE_DOWN:
 			if (stages.length > 0) {
 				selectStage(stages[0]);
 				return true;
 			}
 			break;
-		case NavigationCode.UP:
+		case NavigationCode.DOWN:
 			if (selectedStage) {
 				var index = getSelectedIndex();
 				if (index >= 0) {
@@ -147,7 +151,7 @@ class Control extends MovieClip
 				return true;
 			}
 			break;
-		case NavigationCode.DOWN:
+		case NavigationCode.UP:
 			if (selectedStage) {
 				var index = getSelectedIndex();
 				if (index >= 0) {
@@ -162,19 +166,26 @@ class Control extends MovieClip
 			}
 			break;
 		case NavigationCode.ENTER:
-			if (selectedStage) {
-				advanceStage();
+			if (stages.length > 0 && !selectedStage) {
+				selectStage(stages[0]);
 			}
+			advanceStage();
 			return true;
 		default:
 			{
-				var str = KeyMap.string_from_gfx()
 				var select = function(idx) {
+					var targetStage = undefined
 					if (stages.length > idx) {
-						selectStage(stages[idx]);
-						return true;
+						targetStage = stages[idx];
 					}
-					return false;
+					if (!targetStage) {
+						return false;
+					} else if (targetStage == selectedStage) {
+						advanceStage();
+					} else {
+						selectStage(targetStage);
+					}
+					return true;
 				}
 				switch (details.code) {
 				case 49:
@@ -195,12 +206,6 @@ class Control extends MovieClip
 					return select(7);
 				case 57:
 					return select(8);
-				case speedUpKey:
-					speedControl.changeSpeed(true);
-					return true;
-				case speedDownKey:
-					speedControl.changeSpeed(false);
-					return true;
 				}
 			}
 		}
@@ -210,10 +215,6 @@ class Control extends MovieClip
 	/* PRIVATE */
 	private function selectStage(stage: MovieClip, advance: Boolean)
 	{
-		if (stage == selectedStage) {
-			advanceStage();
-			return;
-		}
 		for (var i = 0; i < stages.length; i++) {
 			if (stages[i] == stage) {
 				if (selectedStage) {
@@ -231,7 +232,8 @@ class Control extends MovieClip
 
 	private function advanceStage()
 	{
-		skse.SendModEvent("SL_StageAdvance", selectedStage.id, 0);
+		var id = selectedStage ? selectedStage.id : "";
+		skse.SendModEvent("SL_StageAdvance", id, 0);
 	}
 
 	private function getSelectedIndex(): Number

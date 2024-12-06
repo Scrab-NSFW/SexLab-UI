@@ -15,20 +15,20 @@
 	/* FUNCTIONS */
 	public function SpeedControl()
 	{
+		super();
+
 		spdUpBtn.onRelease = function() {
-			trace("SpeedControl::spdUpBtn.onRelease");
 			_parent.changeSpeed(true);
 		};
 
 		spdDownBtn.onRelease = function() {
-			trace("SpeedControl::spdDownBtn.onRelease");
 			_parent.changeSpeed(false);
 		};
 	}
 
 	public function setSpeedCounter(speed: Number)
 	{
-		var str = speed.toString(2);
+		var str = speed.toString(10);
 		var where = str.indexOf(".");
 		if (where != -1) {
 			str = str.substr(0, where + 3);
@@ -42,6 +42,11 @@
 			speedIdx++;
 		} else {
 			speedIdx--;
+		}
+		if (speedIdx < 0) {
+			speedIdx = 0;
+		} else if (speedIdx >= speedValues.length) {
+			speedIdx = speedValues.length - 1;
 		}
 		setSpeedCounter(speedValues[speedIdx]);
 		skse.SendModEvent("SL_SetSpeed", "", speedValues[speedIdx]);
