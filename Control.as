@@ -21,8 +21,8 @@ class Control extends MovieClip
 	private var __timerWidth: Number;
 	private var timerTimeLine: TimelineLite;
 
-	public var speedUpKey: String = "E";
-	public var speedDownKey: String = "Q";
+	public var speedUpKey: Number = 69;
+	public var speedDownKey: Number = 81;
 
 	/* FUNCTIONS */
 	public function Control()
@@ -63,17 +63,7 @@ class Control extends MovieClip
 	public function setStages(/* args */)
 	{
 		trace("Setting " + arguments.length + " stages");
-		var t = arguments[0];
-		timerTimeLine.clear();
-		if (t <= 0) {
-			timerTimeLine.to(timer, 0.4, { _alpha: 0 });
-		} else {
-			timerTimeLine
-				.to(timer, 0.3, { _width: __timerWidth, _alpha: 100, ease: Linear.easeNone })
-				.to(timer, t, { _width: 0, ease: Linear.easeNone });
-		}
-
-		var count = Math.max(arguments.length - 1, 0);
+		var count = Math.max(arguments.length, 0);
 		if (count > instanceCounter) {
 			for (var i = instanceCounter; i < count; i++) {
 				var slider = attachMovie(STAGE_MC, STAGE_MC + i, getNextHighestDepth(), {
@@ -100,8 +90,8 @@ class Control extends MovieClip
 				ease: Quint.easeOut
 			});
 			stages[i]._y = rootCoordinates.y - stages[i]._height - distance_between_stages * i;
-			stages[i].tf1.text = (i + 1) + "} " + arguments[i + 1].name;
-			stages[i].id = arguments[i + 1].id;
+			stages[i].tf1.text = (i + 1) + "} " + arguments[i].name;
+			stages[i].id = arguments[i].id;
 			stages[i].onRollOver = function() {
 				_parent.selectStage(this);
 			};
@@ -110,6 +100,19 @@ class Control extends MovieClip
 			};
 		}
 		instanceCounter = count;
+	}
+
+	public function setTimer(t: Number)
+	{
+		trace("Setting timer to " + t);
+		timerTimeLine.clear();
+		if (t <= 0) {
+			timerTimeLine.to(timer, 0.25, { _alpha: 0 });
+		} else {
+			timerTimeLine
+				.to(timer, 0.1, { _width: __timerWidth, _alpha: 100, ease: Linear.easeNone })
+				.to(timer, t, { _width: 0, ease: Linear.easeNone });
+		}
 	}
 	
 	/* GFX */
@@ -165,7 +168,7 @@ class Control extends MovieClip
 			return true;
 		default:
 			{
-				var str = KeyMap.string_from_gfx(details.code)
+				var str = KeyMap.string_from_gfx()
 				var select = function(idx) {
 					if (stages.length > idx) {
 						selectStage(stages[idx]);
@@ -173,24 +176,24 @@ class Control extends MovieClip
 					}
 					return false;
 				}
-				switch (str) {
-				case "1":
+				switch (details.code) {
+				case 49:
 					return select(0);
-				case "2":
+				case 50:
 					return select(1);
-				case "3":	
+				case 51:
 					return select(2);
-				case "4":
+				case 52:
 					return select(3);
-				case "5":
+				case 53:
 					return select(4);
-				case "6":
+				case 54:
 					return select(5);
-				case "7":
+				case 55:
 					return select(6);
-				case "8":
+				case 56:
 					return select(7);
-				case "9":
+				case 57:
 					return select(8);
 				case speedUpKey:
 					speedControl.changeSpeed(true);

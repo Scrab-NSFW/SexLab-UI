@@ -29,7 +29,7 @@ class Main extends MovieClip
 		setLocation(sliders, 0, 1)
 		setLocation(control, 1, 1)
 
-		setTimeout(Delegate.create(this, test), 2000);
+		// setTimeout(Delegate.create(this, test), 2000);
 	}
 
 	private function test() {
@@ -119,6 +119,11 @@ class Main extends MovieClip
 	public function setStages(/* args */)
 	{
 		control.setStages.apply(control, arguments);
+	}
+
+	public function setTimer(time: Number)
+	{
+		control.setTimer(time);
 	}
 
 	public function setSpeedCounter(speed: Number)

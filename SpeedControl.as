@@ -28,7 +28,12 @@
 
 	public function setSpeedCounter(speed: Number)
 	{
-		spdCounter.text = speed.toFixed(2);
+		var str = speed.toString(2);
+		var where = str.indexOf(".");
+		if (where != -1) {
+			str = str.substr(0, where + 3);
+		}
+		spdCounter.text = str;
 	}
 
 	public function changeSpeed(upOrDown: Boolean)
