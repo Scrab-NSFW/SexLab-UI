@@ -137,19 +137,34 @@ class Main extends MovieClip
 	}
 
 	/* GFX */
+	public function handleInputEx(direction: String): Void
+	{
+		var details: InputDetails = new InputDetails();
+		details.navEquivalent = direction;
+		if (settings.handleInputEx(details, []))
+			return;
+		if (control.handleInputEx(details, []))
+			return;
+	}
+
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		if (GlobalFunc.IsKeyPressed(details)) {
-			if (control.handleInput(details, pathToFocus))
-				return true;
 			if (settings.handleInput(details, pathToFocus))
+				return true;
+			if (control.handleInput(details, pathToFocus))
 				return true;
 				// NavigationCode.BACK is backspace
 				// NavigationCode.TAB is tab & escape
 				// What is escape?
-			if (details.navEquivalent == NavigationCode.END) {
-				skse.SendModEvent("SL_EndScene", "", 0);
-				return true;
+			switch (details.navEquivalent) {
+				// case NavigationCode.BACK:
+				// case NavigationCode.TAB:
+				// case NavigationCode.SHIFT_TAB:
+				// case NavigationCode.ESCAPE:
+				case NavigationCode.END:
+					skse.SendModEvent("SL_EndScene", "", 0);
+					return true;
 			}
 		}
 		var nextClip = pathToFocus.shift();

@@ -10,6 +10,12 @@ class Settings extends MovieClip
 		// constructor code
 	}
 
+	/* GFX */
+	public function handleInputEx(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		return handleInput(details, pathToFocus);
+	}
+
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		return false;

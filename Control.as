@@ -65,7 +65,6 @@ class Control extends MovieClip
 		if (count > instanceCounter) {
 			for (var i = instanceCounter; i < count; i++) {
 				var slider = attachMovie(STAGE_MC, STAGE_MC + i, getNextHighestDepth(), {
-					_x: rootCoordinates.x,
 					_alpha: 80
 				});
 				slider.selectIndicator._alpha = 0;
@@ -77,11 +76,14 @@ class Control extends MovieClip
 			}
 			stages.splice(count, instanceCounter - count);
 		}
+		instanceCounter = count;
 		if (stages.length == 0) {
 			return;
 		}
 		var distance_between_stages = stages[0]._height * 1.1;
 		for (var i = 0; i < stages.length; i++) {
+			stages[i]._x = rootCoordinates.x
+			stages[i]._alpha = selectedStage == stages[i] ? 100 : 80;
 			TweenLite.from(stages[i], 1, {
 				_x: stages[i]._x + stages[i]._width,
 				_alpha: 0,
@@ -89,7 +91,8 @@ class Control extends MovieClip
 			});
 			var argText = arguments[i].name ? arguments[i].name : "$SL_NextStage";
 			stages[i]._y = rootCoordinates.y - stages[i]._height - distance_between_stages * i;
-			stages[i].tf1.text = (i + 1) + "} " + argText;
+			stages[i].tf1.text = argText;
+			stages[i].tf2.text = (i + 1) + "}";
 			stages[i].id = arguments[i].id;
 			stages[i].onRollOver = function() {
 				_parent.selectStage(this);
@@ -98,7 +101,6 @@ class Control extends MovieClip
 				_parent.selectStage(this, true);
 			};
 		}
-		instanceCounter = count;
 	}
 
 	public function setTimer(t: Number)
@@ -115,6 +117,11 @@ class Control extends MovieClip
 	}
 	
 	/* GFX */
+	public function handleInputEx(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		return handleInput(details, pathToFocus);
+	}
+
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
 		trace("Control.handleInput: " + details.code + ", " + details.navEquivalent + ", " + details.value + ", " + details.controllerIdx + ", " + details.type);
