@@ -89,7 +89,7 @@ class Control extends MovieClip
 				_alpha: 0,
 				ease: Quint.easeOut
 			});
-			var argText = arguments[i].name ? arguments[i].name : "$SL_NextStage";
+			var argText = arguments[i].name ? arguments[i].name : "$SSL_NextStage";
 			stages[i]._y = rootCoordinates.y - stages[i]._height - distance_between_stages * i;
 			stages[i].tf1.text = argText;
 			stages[i].tf2.text = (i + 1) + "}";
@@ -117,48 +117,16 @@ class Control extends MovieClip
 	}
 	
 	/* GFX */
-	public function handleInputEx(details: InputDetails, pathToFocus: Array): Boolean
+	public function handleInputEx(str: String, modes: Boolean, reset: Boolean): Boolean
 	{
-		return handleInput(details, pathToFocus);
-	}
-
-	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
-	{
-		trace("Control.handleInput: " + details.code + ", " + details.navEquivalent + ", " + details.value + ", " + details.controllerIdx + ", " + details.type);
-		switch (details.navEquivalent) {
-		case NavigationCode.LEFT:
-			speedControl.changeSpeed(false);
-			return true;
-		case NavigationCode.RIGHT:
+		switch (str) {
+		case KeyType.RIGHT:
 			speedControl.changeSpeed(true);
 			return true;
-		case NavigationCode.PAGE_UP:
-			if (stages.length > 0) {
-				selectStage(stages[stages.length - 1]);
-				return true;
-			}
-			break;
-		case NavigationCode.PAGE_DOWN:
-			if (stages.length > 0) {
-				selectStage(stages[0]);
-				return true;
-			}
-			break;
-		case NavigationCode.DOWN:
-			if (selectedStage) {
-				var index = getSelectedIndex();
-				if (index >= 0) {
-					index = (index - 1 + stages.length) % stages.length;
-					selectStage(stages[index], false);
-					return true;
-				}
-			}
-			if (stages.length > 0) {
-				selectStage(stages[stages.length - 1]);
-				return true;
-			}
-			break;
-		case NavigationCode.UP:
+		case KeyType.LEFT:
+			speedControl.changeSpeed(false);
+			return true;
+		case KeyType.UP:
 			if (selectedStage) {
 				var index = getSelectedIndex();
 				if (index >= 0) {
@@ -172,50 +140,74 @@ class Control extends MovieClip
 				return true;
 			}
 			break;
-		case NavigationCode.ENTER:
+		case KeyType.DOWN:
+			if (selectedStage) {
+				var index = getSelectedIndex();
+				if (index >= 0) {
+					index = (index - 1 + stages.length) % stages.length;
+					selectStage(stages[index], false);
+					return true;
+				}
+			}
+			if (stages.length > 0) {
+				selectStage(stages[stages.length - 1]);
+				return true;
+			}
+			break;
+		case KeyType.PAGE_DOWN:
+			if (stages.length > 0) {
+				selectStage(stages[0]);
+				return true;
+			}
+			break;
+		case KeyType.PAGE_UP:
+			if (stages.length > 0) {
+				selectStage(stages[stages.length - 1]);
+				return true;
+			}
+			break;
+		case KeyType.SELECT:
 			if (stages.length > 0 && !selectedStage) {
 				selectStage(stages[0]);
 			}
 			advanceStage();
 			return true;
-		default:
-			{
-				var select = function(idx) {
-					var targetStage = undefined
-					if (stages.length > idx) {
-						targetStage = stages[idx];
-					}
-					if (!targetStage) {
-						return false;
-					} else if (targetStage == selectedStage) {
-						advanceStage();
-					} else {
-						selectStage(targetStage);
-					}
-					return true;
-				}
-				switch (details.code) {
-				case 49:
-					return select(0);
-				case 50:
-					return select(1);
-				case 51:
-					return select(2);
-				case 52:
-					return select(3);
-				case 53:
-					return select(4);
-				case 54:
-					return select(5);
-				case 55:
-					return select(6);
-				case 56:
-					return select(7);
-				case 57:
-					return select(8);
-				}
+		case KeyType.N1:
+		case KeyType.N2:
+		case KeyType.N3:
+		case KeyType.N4:
+		case KeyType.N5:
+		case KeyType.N6:
+		case KeyType.N7:
+		case KeyType.N8:
+		case KeyType.N9:
+			var idx = parseInt(str.charAt(1));
+			if (idx > 0 && idx <= stages.length) {
+				selectStage(stages[idx - 1]);
+				return true;
 			}
+			break;
 		}
+		return false;
+	}
+
+	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	{
+		// COMEBACK: Should remaining cases also be supported in the new input system?
+		// var select = function(idx) {
+		// 	var targetStage = undefined
+		// 	if (stages.length > idx) {
+		// 		targetStage = stages[idx];
+		// 	}
+		// 	if (!targetStage) {
+		// 		return false;
+		// 	} else if (targetStage == selectedStage) {
+		// 		advanceStage();
+		// 	} else {
+		// 		selectStage(targetStage);
+		// 	}
+		// 	return true;
+		// }
 		return false;
 	}
 

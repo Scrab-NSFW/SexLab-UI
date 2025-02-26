@@ -3,21 +3,38 @@ import gfx.ui.NavigationCode;
 
 class Settings extends MovieClip
 {
+	/* STAGE ELEMENTS */
+
+	/* PRIVATE VARIABLES */
+	private var active: Boolean;
 
 
-	public function Details()
+	public function Settings()
 	{
-		// constructor code
+		active = false;
 	}
 
 	/* GFX */
-	public function handleInputEx(details: InputDetails, pathToFocus: Array): Boolean
+	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
 	{
-		return handleInput(details, pathToFocus);
+		return active ? handleActiveInput(keyStr, modes, reset) : handleInactiveInput(keyStr);
 	}
 
-	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
+	private function handleInactiveInput(keyStr: String, modes: Boolean, reset: Boolean): Boolean
 	{
+		active = modes && (keyStr == KeyType.EXTRA1 || keyStr == KeyType.EXTRA2);
+		// this.gotoAndPlay(active ? "open" : "close");
+		return active;
+	}
+
+	private function handleActiveInput(keyStr: String, modes: Boolean, reset: Boolean): Boolean
+	{
+		if (keyStr == KeyType.END) {
+			active = false;
+			//this.gotoAndPlay("close");
+			return true;
+		}
 		return false;
 	}
+
 }

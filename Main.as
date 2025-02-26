@@ -137,40 +137,74 @@ class Main extends MovieClip
 	}
 
 	/* GFX */
-	public function handleInputEx(direction: String): Void
+	public function handleInputEx(str: String, modes: Boolean, reset: Boolean): Void
 	{
-		var details: InputDetails = new InputDetails();
-		details.navEquivalent = direction;
-		if (settings.handleInputEx(details, []))
+		trace("Main.handleInputEx(" + str + ")");
+		if (settings.handleInputEx(str, modes, reset))
 			return;
-		if (control.handleInputEx(details, []))
+		if (control.handleInputEx(str, modes, reset))
 			return;
+		if (str == KeyType.END) {
+			skse.SendModEvent("SL_EndScene", "", 0);
+			trace("SL_EndScene");
+			return;
+		}
 	}
 
+	private var modes = false;
+	private var reset = false;
 	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
 	{
-		if (GlobalFunc.IsKeyPressed(details)) {
-			if (settings.handleInput(details, pathToFocus))
-				return true;
-			if (control.handleInput(details, pathToFocus))
-				return true;
-				// NavigationCode.BACK is backspace
-				// NavigationCode.TAB is tab & escape
-				// What is escape?
-			switch (details.navEquivalent) {
-				// case NavigationCode.BACK:
-				// case NavigationCode.TAB:
-				// case NavigationCode.SHIFT_TAB:
-				// case NavigationCode.ESCAPE:
-				case NavigationCode.END:
-					skse.SendModEvent("SL_EndScene", "", 0);
-					return true;
+		if (!GlobalFunc.IsKeyPressed(details)) {
+			return false;
+		}
+		var retVal = false;
+		switch (details.navEquivalent) {
+		case NavigationCode.LEFT:
+			retVal = handleInputEx(KeyType.LEFT, modes, reset);
+			break;
+		case NavigationCode.RIGHT:
+			retVal = handleInputEx(KeyType.RIGHT, modes, reset);
+			break;
+		case NavigationCode.PAGE_UP:
+			retVal = handleInputEx(KeyType.PAGE_UP, modes, reset);
+			break;
+		case NavigationCode.PAGE_DOWN:
+			retVal = handleInputEx(KeyType.PAGE_DOWN, modes, reset);
+			break;
+		case NavigationCode.DOWN:
+			retVal = handleInputEx(KeyType.DOWN, modes, reset);
+			break;
+		case NavigationCode.UP:
+			retVal = handleInputEx(KeyType.UP, modes, reset);
+			break;
+		case NavigationCode.ENTER:
+			retVal = handleInputEx(KeyType.SELECT, modes, reset);
+			break;
+		default:
+			var keyStr = KeyMap.string_from_gfx(details.code);
+			if (keyStr == null)
+				return false;
+			else if (keyStr == "LeftShift")
+				return !(modes = true);
+			else if (keyStr == "LeftControl")
+				return !(reset = true);
+			else if (keyStr == "Q") {
+				retVal = handleInputEx(KeyType.EXTRA1, modes, reset);
+				break;
+			} else if (keyStr == "E") {
+				retVal = handleInputEx(KeyType.EXTRA2, modes, reset);
+				break;
+			} else if (keyStr == "LeftAlt") {
+				retVal = handleInputEx(KeyType.MOUSE, modes, reset);
+				break;
+			} else {
+				retVal = handleInputEx(keyStr);
+				break;
 			}
 		}
-		var nextClip = pathToFocus.shift();
-		if (nextClip && nextClip.handleInput(details, pathToFocus))
-			return true;
-		return false;
+		modes = reset = false;
+		return retVal;
 	}
 
 }
