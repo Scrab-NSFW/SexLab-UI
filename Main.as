@@ -32,7 +32,7 @@ class Main extends MovieClip
 		setLocation(sliders, 0, 1)
 		setLocation(control, 1, 1)
 
-		settings._visible = false;
+		// settings._visible = false;
 
 		// setTimeout(Delegate.create(this, test), 2000);
 	}
