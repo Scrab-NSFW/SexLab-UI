@@ -100,10 +100,10 @@ class DropdownMenu extends MovieClip
 		var maxIdx = activeLayout.length - 1;
 		switch (keyStr) {
 		case KeyType.UP:
-			setActiveIdx(activeLeftIdx <= 0 ? maxIdx : activeLeftIdx - 1, true);
+			setActiveIdx(activeLeftIdx <= 0 ? maxIdx : activeLeftIdx - 1);
 			return true;
 		case KeyType.DOWN:
-			setActiveIdx(activeLeftIdx == -1 ? 0 : activeLeftIdx == maxIdx ? 0 : activeLeftIdx + 1, true);
+			setActiveIdx(activeLeftIdx == -1 ? 0 : activeLeftIdx == maxIdx ? 0 : activeLeftIdx + 1);
 			return true;
 		case KeyType.LEFT:
 			if (!activeRight) {
@@ -112,10 +112,10 @@ class DropdownMenu extends MovieClip
 			focusLeft();
 			return true;
 		case KeyType.PAGE_DOWN:
-			setActiveIdx(maxIdx, true);
+			setActiveIdx(maxIdx);
 			return true;
 		case KeyType.PAGE_UP:
-			setActiveIdx(0, true);
+			setActiveIdx(0);
 			return true;
 		case KeyType.RIGHT:
 			if (activeRight) {
@@ -125,27 +125,45 @@ class DropdownMenu extends MovieClip
 		case KeyType.SELECT:
 			if (!activeRight) {
 				activeRight = this[activeLayout[activeLeftIdx].right];
-				if (activeRight == undefined) {
-					trace("DropdownMenu: handleInputEx: activeRight is undefined for index " + activeLeftIdx);
-					return false;
+				if (activeRight != undefined) {
+					this["left" + (activeLayoutIdx + 1)]._alpha = 30;
+					activeRight.setDefault();
+				} else {
+					var activeLeft = activeLayout[activeLeftIdx].name;
+					switch (activeLeft) {
+					case "pickRandom":
+						SexLabAPI.PickRandomScene();
+						break;
+					case "pauseAnimation":
+						SexLabAPI.ToggleAnimationPaused();
+						break;
+					case "toggleAutoplay":
+						SexLabAPI.ToggleAutoPlay();
+						break;
+					case "moveScene":
+						SexLabAPI.MoveScene();
+						break;
+					case "endScene":
+						SexLabAPI.EndScene();
+						break;
+					}
+					return true;
 				}
-				this["left" + (activeLayoutIdx + 1)]._alpha = 30;
-				activeRight.setDefault();
+				return true;
 			} else {
-				// TODO: handle select action for the current row
+				return activeRight.handleInputEx && activeRight.handleInputEx(keyStr, modes, reset);
 			}
-			break;
 		default:
 			return false;
 		}
 	}
 
-	private function setActiveIdx(newIdx, left)
+	private function setActiveIdx(newIdx)
 	{
 		if (newIdx == activeLeftIdx) {
 			return;
 		}
-		var referenceArr = left ? layout[activeLayoutIdx] : layout[activeLayoutIdx].right;
+		var referenceArr = layout[activeLayoutIdx];
 		if (newIdx >= referenceArr.length) {
 			trace("DropdownMenu: setActiveIdx: newIdx is out of bounds for index " + newIdx);
 			return;
@@ -195,6 +213,7 @@ class DropdownMenu extends MovieClip
 	public function onItemPressAlternate(eventObj)
 	{
 		trace("DropdownMenu: onItemPressAlternate: eventObj is " + eventObj.entry.name);
+		SexLabAPI.SetActiveScene(eventObj.entry.id);
 	}
 
 	/* LAYOUT */
@@ -238,10 +257,10 @@ class DropdownMenu extends MovieClip
 		left1["offset"].init(getTextInit("$SSL_Offset", ">"));
 		left1["scenes"].init(getTextInit("$SSL_AlternateScenes", ">"));
 		left1["pickRandom"].init(getTextInit("$SSL_PickRandom", ""));
-		left1["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation", "TODO: Hotkey..?"));
-		left1["toggleAutoplay"].init(getTextInit("$SSL_ToggleAutoplay", "TODO: Hotkey..?"));
-		left1["moveScene"].init(getTextInit("$SSL_MoveScene", "TODO: hotkey..?"));
-		left1["endScene"].init(getTextInit("$SSL_EndScene", "TODO: lookup hotkey..."));
+		left1["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation"));
+		left1["toggleAutoplay"].init(getTextInit("$SSL_ToggleAutoplay"));
+		left1["moveScene"].init(getTextInit("$SSL_MoveScene"));
+		left1["endScene"].init(getTextInit("$SSL_EndScene", SexLabAPI.GetHotkeyCombination("endScene")));
 	}
 
 }

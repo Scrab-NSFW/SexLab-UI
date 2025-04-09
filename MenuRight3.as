@@ -40,19 +40,8 @@ class MenuRight3 extends skyui.components.list.ScrollingList
 
 	public function updateFields(): Void
 	{
-		// TODO: lookup scene names in backend
-		var scenes = [
-			{ name: "$SSL_Scene1", extra: "" },
-			{ name: "$SSL_Scene2", extra: "" },
-			{ name: "$SSL_Scene3", extra: "" },
-			{ name: "$SSL_Scene4", extra: "" },
-			{ name: "$SSL_Scene5", extra: "" },
-			{ name: "$SSL_Scene6", extra: "" },
-			{ name: "$SSL_Scene7", extra: "" },
-			{ name: "$SSL_Scene8", extra: "" }
-		];
-
 		entryList.clearList();
+		var scenes = SexLabAPI.GetAlternateScenes();
 		for (var i = 0; i < scenes.length; i++) {
 			var scene = scenes[i];
 			if (scene == undefined) {

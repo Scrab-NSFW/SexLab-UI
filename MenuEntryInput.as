@@ -76,4 +76,9 @@ class MenuEntryInput extends MovieClip
 		return inputField.type == "input";
 	}
 
+	public function getText(): String
+	{
+		return inputField.text;
+	}
+
 }

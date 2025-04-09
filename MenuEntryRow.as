@@ -28,6 +28,9 @@ class MenuEntryRow extends skyui.components.list.BasicListEntry
 	{
 		name.text = initObj.name;
 		value.text = initObj.extra ? initObj.extra : "";
+		if (initObj.align != undefined) {
+			value.autoSize = initObj.align;
+		}
 		selectIndicator._visible =  initObj.selected != undefined ? initObj.selected : selectIndicator._visible;
 	}
 
@@ -37,11 +40,6 @@ class MenuEntryRow extends skyui.components.list.BasicListEntry
 			return;
 		}
 		selectIndicator._visible = selected;
-	}
-
-	public function setExtra(extra): Void
-	{
-		value.text = extra;
 	}
 
 	/* BASIC LIST FUNCTIONS */

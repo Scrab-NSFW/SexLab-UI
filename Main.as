@@ -145,7 +145,7 @@ class Main extends MovieClip
 		if (control.handleInputEx(str, modes, reset))
 			return;
 		if (str == KeyType.END) {
-			skse.SendModEvent("SL_EndScene", "", 0);
+			SexLabAPI.EndScene();
 			trace("SL_EndScene");
 			return;
 		}
