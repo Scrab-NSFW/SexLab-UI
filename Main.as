@@ -139,6 +139,7 @@ class Main extends MovieClip
 	/* GFX */
 	public function handleInputEx(str: String, modes: Boolean, reset: Boolean): Void
 	{
+		str = str.toLowerCase();
 		trace("Main.handleInputEx(" + str + ")");
 		if (settings.handleInputEx(str, modes, reset))
 			return;

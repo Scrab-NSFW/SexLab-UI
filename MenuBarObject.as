@@ -60,9 +60,7 @@
 		var outlineXStart = outlineStart._x;
 		var outlineWidth = outlineXEnd - outlineXStart;
 		var bgRatio = outlineWidth / background.background._width;
-		trace("bgRatio: " + bgRatio);
 		background._width *= bgRatio;
-		trace("background._width: " + background._width);
 	}
 
 }

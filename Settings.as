@@ -1,5 +1,4 @@
-﻿import gfx.ui.InputDetails;
-import gfx.ui.NavigationCode;
+﻿
 
 class Settings extends MovieClip
 {
@@ -25,11 +24,16 @@ class Settings extends MovieClip
 	public function onLoad()
 	{
 		menuSets = menuBar.textArr;
+		dropdownMenu._x = menuBar._x;
+		dropdownMenu._y = menuBar._y + (menuBar.background.background._height / 2) + 5;
 	}
 
 	/* GFX */
 	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
 	{
+		if (dropdownMenu._visible && dropdownMenu.handleInputEx(keyStr, modes, reset)) {
+			return true;
+		}
 		switch (keyStr) {
 		case KeyType.EXTRA1:
 			slide(activeIdx <= 1 ? 0 : activeIdx - 1);
@@ -41,13 +45,14 @@ class Settings extends MovieClip
 			);
 			return true;
 		case KeyType.END:
-			if (dropdownMenu._visible) {
+			if (dropdownMenu._visible && modes) {
 				dropdownMenu._visible = false;
+				activeIdx = -1;
 				return true;
 			}
 			return false;
 		default:
-			return dropdownMenu.handleInputEx(keyStr, modes, reset);
+			return false;
 		}
 	}
 
@@ -56,7 +61,6 @@ class Settings extends MovieClip
 		if (newIdx == activeIdx) {
 			return;
 		}
-		dropdownMenu._visible = true;
 		var activeMenu: TextField = menuSets[newIdx];
 		activeMenu.text = "<" + activeMenu.text + ">";
 		if (activeIdx >= 0) {
@@ -64,7 +68,8 @@ class Settings extends MovieClip
 			previousMenu.text = previousMenu.text.substr(1, previousMenu.text.length - 2);
 		}
 		activeIdx = newIdx;
-		dropdownMenu.setLayout(activeIdx);
+		dropdownMenu.setLayout(newIdx);
+		dropdownMenu._visible = true;
 	}
 
 }
