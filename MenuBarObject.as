@@ -26,8 +26,7 @@
 	{
 		var midIdx = 0;
 		var mid = attachMovie(OUTLINE_MID, "outlineMid" + (midIdx++), getNextHighestDepth(), {
-			_x: outlineStart._x + outlineStart._width,
-			_y: outlineStart._y
+			_x: outlineStart._x + outlineStart._width, _y: outlineStart._y
 		});
 		for (var i = 0; i < textArr.length; i++) {
 			var text = textArr[i];
@@ -36,25 +35,19 @@
 			var expectedWidth = text._x + text._width - (lastIteration ? mid._width : 0);
 			while (mid._x < expectedWidth) {
 				mid = attachMovie(OUTLINE_MID, "outlineMid" + (midIdx++), getNextHighestDepth(), {
-					_x: mid._x + mid._width,
-					_y: mid._y
+					_x: mid._x + mid._width, _y: mid._y
 				});
 			}
 			if (lastIteration) {
 				break;
 			}
-			attachMovie(OUTLINE_SEP, "outlineSep" + i, getNextHighestDepth(), {
-				_x: mid._x,
-				_y: mid._y
-			});
+			attachMovie(OUTLINE_SEP, "outlineSep" + i, getNextHighestDepth(), { _x: mid._x, _y: mid._y });
 			mid = attachMovie(OUTLINE_MID, "outlineMid" + (midIdx++), getNextHighestDepth(), {
-				_x: mid._x + mid._width,
-				_y: mid._y
+				_x: mid._x + mid._width, _y: mid._y
 			});
 		}
 		mid = attachMovie(OUTLINE_END, "outlineEnd", getNextHighestDepth(), {
-			_x: mid._x + mid._width,
-			_y: mid._y
+			_x: mid._x + mid._width, _y: mid._y
 		});
 		var outlineXEnd = mid._x + mid._width;
 		var outlineXStart = outlineStart._x;

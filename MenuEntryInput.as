@@ -23,8 +23,8 @@ class MenuEntryInput extends MovieClip
 	public function init(initObj)
 	{
 		name.text = initObj.name;
-		selectIndicator._visible = initObj.selected;
-		inputField.text = initObj.content;
+		selectIndicator._visible =  initObj.selected != undefined ? initObj.selected : selectIndicator._visible;
+		inputField.text = initObj.content ? initObj.content : "";
 		inputField.type = "dynamic";
 		inputField.border = true;
 		inputField.borderColor = 0x000000;
@@ -42,7 +42,6 @@ class MenuEntryInput extends MovieClip
 
 	public function setFocus(): Void
 	{
-		trace("setFocus() called on MenuEntryInput");
 		_previousFocus = FocusHandler.instance.getFocus(0);
 		
 		inputField.type = "input";
@@ -50,14 +49,13 @@ class MenuEntryInput extends MovieClip
 		inputField.selectable = true;
 		
 		Selection.setFocus(inputField);
-		Selection.setSelection(0,0);
+		Selection.setSelection(0, 0);
 
 		skse.AllowTextInput(true);
 	}
 
 	public function endInput(): Void
 	{
-		trace("endInput() called on MenuEntryInput " + _previousFocus);
 		if (!_previousFocus) {
 			return;
 		}
@@ -71,6 +69,11 @@ class MenuEntryInput extends MovieClip
 		_previousFocus.focusEnabled = bPrevEnabled;
 
 		skse.AllowTextInput(false);
+	}
+
+	public function hasFocus()
+	{
+		return inputField.type == "input";
 	}
 
 }

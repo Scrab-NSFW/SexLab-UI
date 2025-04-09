@@ -38,7 +38,9 @@ class MenuRight1 extends MovieClip
 	}
 	
 	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
-	{ 
+	{
+		if (keyStr == KeyType.END)
+			return false;
 		return true;
 	}
 

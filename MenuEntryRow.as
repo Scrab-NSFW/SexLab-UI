@@ -7,7 +7,7 @@ class MenuEntryRow extends skyui.components.list.BasicListEntry
 	/* STAGE ELEMENTS */
 	public var background: MovieClip;
 	public var name: TextField;
-	public var extra: TextField;
+	public var value: TextField;
 	public var selectIndicator: MovieClip;
 
 	/* PROPERTIES */
@@ -27,8 +27,8 @@ class MenuEntryRow extends skyui.components.list.BasicListEntry
 	public function init(initObj)
 	{
 		name.text = initObj.name;
-		extra.text = initObj.extra;
-		selectIndicator._visible = initObj.selected;
+		value.text = initObj.extra ? initObj.extra : "";
+		selectIndicator._visible =  initObj.selected != undefined ? initObj.selected : selectIndicator._visible;
 	}
 
 	public function setSelected(selected): Void
@@ -37,6 +37,11 @@ class MenuEntryRow extends skyui.components.list.BasicListEntry
 			return;
 		}
 		selectIndicator._visible = selected;
+	}
+
+	public function setExtra(extra): Void
+	{
+		value.text = extra;
 	}
 
 	/* BASIC LIST FUNCTIONS */

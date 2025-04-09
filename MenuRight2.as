@@ -15,9 +15,11 @@ class MenuRight2 extends MovieClip
 	public var rOffset: MovieClip;
 
 	/* PRIVATE VARIABLES */
-
 	private var selectables: Array;
 	private var activeSelectionIndex: Number = 0;
+
+	private var stepSizeValue: Number = 0.5;
+	private var stageOnlyValue: Boolean = false;
 
 	/* INITIALIZATION */
 	public function MenuRight2()
@@ -25,7 +27,11 @@ class MenuRight2 extends MovieClip
 		selectables = [
 			stepSize,
 			stageOnly,
-			resetOffsets
+			resetOffsets,
+			xOffset,
+			zOffset,
+			yOffset,
+			rOffset
 		];
 	}
 
@@ -43,53 +49,73 @@ class MenuRight2 extends MovieClip
 
 	public function updateFields()
 	{
-		furnitureType.init({ name: "$SSL_ActiveFurniture", extra: "", selected: false });
+		stepSizeValue = SexLabAPI.GetOffsetStepSize();
+		if (stepSizeValue == undefined) stepSizeValue = 0.5;	// Test value
+		stageOnlyValue = SexLabAPI.GetAdjustStagenOnly() || true;
 
-		stepSize.init({ name: "$SSL_StepSize", extra: "0.5", selected: false });
-		stageOnly.init({ name: "$SSL_StageOnly", extra: "N", selected: false });
-		resetOffsets.init({ name: "$SSL_ResetOffsets", extra: "", selected: false });
+		furnitureType.init({ name: "$SSL_ActiveFurniture{" + SexLabAPI.GetActiveFurnitureName() + "}" });
 
-		xOffset.init({ name: "X", content: "13.5", selected: false });
-		yOffset.init({ name: "Y", content: "13.5", selected: false });
-		zOffset.init({ name: "Z", content: "13.5", selected: false });
-		rOffset.init({ name: "R", content: "13.5", selected: false });
+		stepSize.init({ name: "$SSL_StepSize", extra: stepSizeValue.toString() });
+		stageOnly.init({ name: "$SSL_StageOnly", extra: stageOnlyValue });
+		resetOffsets.init({ name: "$SSL_ResetOffsets" });
+
+		xOffset.init({ name: "X" });
+		yOffset.init({ name: "Y" });
+		zOffset.init({ name: "Z" });
+		rOffset.init({ name: "R" });
 	}
 	
 	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
 	{
+		var selection = selectables[activeSelectionIndex];
+		if (selection.hasFocus != undefined && selection.hasFocus()) {
+			if (keyStr == KeyType.END)
+				selection.endInput();
+			return true;
+		}
 		switch (keyStr) {
 		case KeyType.PAGE_UP:
-			selectables[activeSelectionIndex].setSelected(false);
+			selection.setSelected(false);
 			activeSelectionIndex = 0;
 			selectables[activeSelectionIndex].setSelected(true);
 			return true;
 		case KeyType.PAGE_DOWN:
-			selectables[activeSelectionIndex].setSelected(false);
+			selection.setSelected(false);
 			activeSelectionIndex = selectables.length - 1;
 			selectables[activeSelectionIndex].setSelected(true);
 			return true;
 		case KeyType.UP:
-			selectables[activeSelectionIndex].setSelected(false);
+			if (selection.endInput != undefined && modes) {
+				selection.adjustOffset(stepSizeValue, true);
+				return true;
+			}
+			selection.setSelected(false);
 			activeSelectionIndex = (activeSelectionIndex - 1 + selectables.length) % selectables.length;
 			selectables[activeSelectionIndex].setSelected(true);
 			return true;
 		case KeyType.DOWN:
-			selectables[activeSelectionIndex].setSelected(false);
+			if (selection.endInput != undefined && modes) {
+				selection.adjustOffset(stepSizeValue, false);
+				return true;
+			}
+			selection.setSelected(false);
 			activeSelectionIndex = (activeSelectionIndex + 1) % selectables.length;
 			selectables[activeSelectionIndex].setSelected(true);
 			return true;
 		case KeyType.SELECT:
-			{
-				var selection = selectables[activeSelectionIndex];
-				if (selection == stepSize) {
-					// TODO: increase/reduce stepsize
-				} else if (selection == stageOnly) {
-					// TODO: toggle stage only
-				} else if (selection == resetOffsets) {
-					// TODO: reset offsets
-				}
-				return true;
+			if (selection == stepSize) {
+				selection.adjustOffset(stepSizeValue, !reset);
+				updateFields();
+			} else if (selection == stageOnly) {
+				SexLabAPI.SetAdjustStageOnly(!stageOnlyValue);
+				updateFields();
+			} else if (selection == resetOffsets) {
+				SexLabAPI.ResetOffsets();
+				updateFields();
+			} else if (selection.setFocus != undefined) {
+				selection.setFocus();
 			}
+			return true;
 		default:
 			return false;
 		}

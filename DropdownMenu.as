@@ -85,14 +85,12 @@ class DropdownMenu extends MovieClip
 			switch (keyStr) {
 			case KeyType.EXTRA1:
 			case KeyType.EXTRA2:
+				activeRight.handleInputEx(keyStr, modes, reset);
+				return true;
 			case KeyType.LEFT:
-				if (activeRight.handleInputEx(keyStr, modes, reset))
-					return true;
-				// fallthrough
-				if (KeyType != KeyType.LEFT)
-					return true;	// skip exit if Extra1/2 pressed
 			case KeyType.END:
-				focusLeft();
+				if (!activeRight.handleInputEx(keyStr, modes, reset))
+					focusLeft();
 				return true;
 			default:
 				return activeRight.handleInputEx(keyStr, modes, reset);
