@@ -14,7 +14,10 @@ class MenuRight1 extends MovieClip
 
 	/* INITIALIZATION */
 	
-	public function MenuRight1() {}
+	public function MenuRight1()
+	{
+		super();
+	}
 
 	public function updateFields()
 	{

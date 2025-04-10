@@ -11,7 +11,7 @@ class MenuEntryRow extends skyui.components.list.BasicListEntry
 	public var selectIndicator: MovieClip;
 
 	/* PROPERTIES */
-	public var selectable: Boolean;
+	public var selectable: Boolean = true;
 
 	/* PRIVATE VARIABLES */
 

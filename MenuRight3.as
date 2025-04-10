@@ -1,41 +1,15 @@
 ﻿import skyui.components.list.ScrollingList;
 
-class MenuRight3 extends skyui.components.list.ScrollingList
+class MenuRight3 extends ScrollingListInputEx
 {
 	/* STAGE ELEMENTS */
 
 	/* PRIVATE VARIABLES */
 
 	/* INITIALIZATION */
-	public function MenuRight3() {}
-
-	public function setDefault()
+	public function MenuRight3()
 	{
-		selectDefaultIndex(true);
-	}
-
-	public function resetSelection()
-	{
-		doSetSelectedIndex(-1, SELECT_KEYBOARD);
-	}
-
-	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
-	{
-		switch (keyStr) {
-		case KeyType.PAGE_UP:
-		case KeyType.UP:
-			moveSelectionUp(keyStr == KeyType.PAGE_UP);
-			return true;
-		case KeyType.PAGE_DOWN:
-		case KeyType.DOWN:
-			moveSelectionDown(keyStr == KeyType.PAGE_DOWN);
-			return true;
-		case KeyType.SELECT:
-			onItemPress();
-			return true;
-		default:
-			return false;
-		}
+		super();
 	}
 
 	public function updateFields(): Void

@@ -45,9 +45,8 @@ class Settings extends MovieClip
 			);
 			return true;
 		case KeyType.END:
-			if (dropdownMenu._visible && modes) {
-				dropdownMenu._visible = false;
-				activeIdx = -1;
+			if (activeIdx > -1) {
+				closeMenu();
 				return true;
 			}
 			return false;
@@ -61,15 +60,25 @@ class Settings extends MovieClip
 		if (newIdx == activeIdx) {
 			return;
 		}
-		var activeMenu: TextField = menuSets[newIdx];
-		activeMenu.text = "<" + activeMenu.text + ">";
-		if (activeIdx >= 0) {
+		if (activeIdx > -1) {
 			var previousMenu: TextField = menuSets[activeIdx];
 			previousMenu.text = previousMenu.text.substr(1, previousMenu.text.length - 2);
 		}
+		if (newIdx == -1) {
+			activeIdx = -1;
+			return;
+		}
+		var activeMenu: TextField = menuSets[newIdx];
+		activeMenu.text = "<" + activeMenu.text + ">";
 		activeIdx = newIdx;
 		dropdownMenu.setLayout(newIdx);
 		dropdownMenu._visible = true;
+	}
+
+	public function closeMenu(): Void
+	{
+		dropdownMenu._visible = false;
+		slide(-1);
 	}
 
 }

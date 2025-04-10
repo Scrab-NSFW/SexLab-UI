@@ -14,7 +14,7 @@ intrinsic class SexLabAPI
     static function ResetOffsets():Void;
 	static function GetOffsetStepSize():Number;
     static function AdjustOffsetStepSize(upward:Boolean):Number;
-    static function GetAdjustStagenOnly():Boolean;
+    static function GetAdjustStageOnly():Boolean;
     static function SetAdjustStageOnly(value: Boolean):Void;
 
     static function GetActiveFurnitureName():String;
@@ -25,6 +25,7 @@ intrinsic class SexLabAPI
 
     static function ToggleAnimationPaused():Void;
     static function ToggleAutoPlay():Void;
+    static function IsAutoPlay():Boolean;
     static function MoveScene():Void;
     static function EndScene():Void;
 }

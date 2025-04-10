@@ -6,8 +6,8 @@ import skyui.components.list.BasicEnumeration;
 
 class DropdownMenu extends MovieClip
 {
-	public static var THREAD_IDX: Number = 0;
-	public static var POSITION_IDX: Number = 1;
+	public static var MENU_TOP_BORDER: Number = 90;
+	public static var MENU_ENTRY_HEIGHT: Number = 30;
 
 	public static var MENU_ENTRY: String = "MenuEntryRow";
 	public static var MENU_ENTRY_INPUT: String = "MenuEntryInput";
@@ -23,8 +23,10 @@ class DropdownMenu extends MovieClip
 	public var right1: MovieClip;
 	public var right2: MovieClip;
 	public var right3: MovieClip;
+	public var right4: MovieClip;
 
 	/* PRIVATE VARIABLES */
+	private var positionArrObjs: Array;
 	private var layout: Array;
 	private var activeLayoutIdx: Number;
 	private var activeLeftIdx: Number;
@@ -42,17 +44,25 @@ class DropdownMenu extends MovieClip
 		activeLeftIdx = -1;
 
 		var tmp = background.dropdownDouble;
-		left1._x = tmp.decoratorLeft._x;
-		left1._y = background._y;
+		var yOffset = background._y + background._height * 0.025;
+		left1._x = left2._x = left3._x = tmp.decoratorLeft._x;
+		left1._y = left2._y = left3._y = yOffset;
+		left1._visible = left2._visible = left3._visible = false;
 
-		right1._x = right2._x = right3._x = tmp.decoratorRight._x;
-		right1._y = right2._y = right3._y = background._y;
-		right1._visible = right2._visible = right3._visible = false;
+		right1._x = right2._x = right3._x = right4._x = tmp.decoratorRight._x;
+		right1._y = right2._y = right3._y = right4._y = yOffset;
+		right1._visible = right2._visible = right3._visible = right4._visible = false;
 
 		EventDispatcher.initialize(this);
-		layout = [
-			getLayoutThread()
-		];
+		
+		positionArrObjs = new Array();
+		for (var i = 0; i < 5; i++) {
+			positionArrObjs.push(left2.attachMovie(MENU_ENTRY, MENU_ENTRY + i, left2.getNextHighestDepth(), {
+				_x: left2.background._x + left2.background._width / 2, _y: MENU_TOP_BORDER + MENU_ENTRY_HEIGHT * i, _visible: true
+			}));
+		}
+
+		layout = getLayout();
 	}
 
 	public function onLoad()
@@ -61,6 +71,8 @@ class DropdownMenu extends MovieClip
 		right3.addEventListener("itemPress", this, "onItemPressAlternate");
 
 		updateThreadLayout();
+		updatePositionLayout();
+		updateDebugLayout();
 	}
 
 	/* PUBLIC FUNCTIONS */
@@ -70,12 +82,15 @@ class DropdownMenu extends MovieClip
 			trace("DropdownMenu: setLayout: layoutIdx is out of bounds for index " + layoutIdx);
 			return;
 		}
-		if (activeLayoutIdx > 0) {
+		if (activeLayoutIdx > -1) {
+			if (activeRight)
+				focusLeft();
+			setActiveIdx(-1);
 			this["left" + (activeLayoutIdx + 1)]._visible = false;
 		}
 		this["left" + (layoutIdx + 1)]._visible = true;
 		activeLayoutIdx = layoutIdx;
-		setActiveIdx(0, true);
+		setActiveIdx(0);
 	}
 
 	/* GFX */
@@ -124,30 +139,20 @@ class DropdownMenu extends MovieClip
 			// fallthrough
 		case KeyType.SELECT:
 			if (!activeRight) {
-				activeRight = this[activeLayout[activeLeftIdx].right];
+				activeRight = activeLayout[activeLeftIdx].rightClip;
 				if (activeRight != undefined) {
 					this["left" + (activeLayoutIdx + 1)]._alpha = 30;
 					activeRight.setDefault();
+				} else if (activeLayout[activeLeftIdx].func != undefined) {
+					activeLayout[activeLeftIdx].func();
+				} else if (activeLayout[activeLeftIdx].clip == left2["offsetStepSize"]) {
+					SexLabAPI.AdjustOffsetStepSize(!reset);
+				} else if (activeLayout[activeLeftIdx].clip == left2["offsetStageOnly"]) {
+					toggleStageOnly();
+				} else if (activeLayout[activeLeftIdx].clip == left3["exitMenu"]) {
+					_parent.closeMenu();
 				} else {
-					var activeLeft = activeLayout[activeLeftIdx].name;
-					switch (activeLeft) {
-					case "pickRandom":
-						SexLabAPI.PickRandomScene();
-						break;
-					case "pauseAnimation":
-						SexLabAPI.ToggleAnimationPaused();
-						break;
-					case "toggleAutoplay":
-						SexLabAPI.ToggleAutoPlay();
-						break;
-					case "moveScene":
-						SexLabAPI.MoveScene();
-						break;
-					case "endScene":
-						SexLabAPI.EndScene();
-						break;
-					}
-					return true;
+					trace("DropdownMenu: handleInputEx: rightClip is undefined for index " + activeLeftIdx);
 				}
 				return true;
 			} else {
@@ -168,25 +173,31 @@ class DropdownMenu extends MovieClip
 			trace("DropdownMenu: setActiveIdx: newIdx is out of bounds for index " + newIdx);
 			return;
 		}
+		if (activeLeftIdx > -1) {
+			var oldOption = referenceArr[activeLeftIdx];
+			oldOption.clip.setSelected(false);
+			if (oldOption.rightClip != undefined) {
+				oldOption.rightClip._visible = false;
+			}
+		}
+		if (newIdx == -1) {
+			activeLeftIdx = -1;
+			return;
+		}
 		var newOption = referenceArr[newIdx];
 		if (newOption == undefined) {
 			trace("DropdownMenu: setActiveIdx: newOption is undefined for index " + newIdx);
 			return;
 		}
-		var leftCard = this["left" + (activeLayoutIdx + 1)];
-		if (activeLeftIdx > -1) {
-			var oldOption = referenceArr[activeLeftIdx];
-			leftCard[oldOption.name].setSelected(false);
-			if (oldOption.right != undefined) {
-				this[oldOption.right]._visible = false;
+		newOption.clip.setSelected(true);
+		if (newOption.rightClip != undefined) {
+			if (newOption.rightClip.resetFields != undefined) {
+				newOption.rightClip.resetFields(newOption.id);
 			}
-		}
-		leftCard[newOption.name].setSelected(true);
-		if (newOption.right != undefined) {
-			this[newOption.right]._visible = true;
+			newOption.rightClip._visible = true;
 			background.gotoAndStop("double");
 		} else {
-			this[newOption.right]._visible = false;
+			newOption.rightClip._visible = false;
 			background.gotoAndStop("single");
 		}
 		activeLeftIdx = newIdx;
@@ -212,7 +223,7 @@ class DropdownMenu extends MovieClip
 
 	public function onItemPressAlternate(eventObj)
 	{
-		trace("DropdownMenu: onItemPressAlternate: eventObj is " + eventObj.entry.name);
+		trace("onItemPressAlternate: " + eventObj.entry.name);
 		SexLabAPI.SetActiveScene(eventObj.entry.id);
 	}
 
@@ -220,7 +231,7 @@ class DropdownMenu extends MovieClip
 
 	private function getTextInit(name, extra, selected)
 	{
-		return { name: name, extra: extra ? extra : "", selected: selected ? selected : false };
+		return { name: name, extra: extra != undefined ? extra : "", selected: selected != undefined ? selected : false };
 	}
 
 	private function getInputInit(name, content, selected)
@@ -233,18 +244,63 @@ class DropdownMenu extends MovieClip
 		return { name: name, content: content };
 	}
 
+	private function getLayout()
+	{
+		return [
+			getLayoutThread(),
+			getLayoutPositions(),
+			getDebugLayout()
+		]
+	}
 	private function getLayoutThread()
 	{
 		return [
-			{ name: "info", right: "right1" },
-			{ name: "offset", right: "right2" },
-			{ name: "scenes", right: "right3" },
-			{ name: "pickRandom" },
-			{ name: "pauseAnimation" },
-			{ name: "toggleAutoplay" },
-			{ name: "moveScene" },
-			{ name: "endScene" }
+			{ clip: left1["info"], rightClip: right1 },
+			{ clip: left1["offset"], rightClip: right2 },
+			{ clip: left1["scenes"], rightClip: right3 },
+			{ clip: left1["pickRandom"], func: SexLabAPI.PickRandomScene },
+			{ clip: left1["toggleAutoplay"], func: SexLabAPI.ToggleAutoPlay }
 		];
+	}
+	private function getLayoutPositions()
+	{
+		// var positions = SexLabAPI.GetPositions();
+		var positions = [
+			{ name: "P1", data: {} },
+			{ name: "P2", data: {} },
+			{ name: "P3", data: {} },
+			{ name: "P4", data: {} },
+			{ name: "P5", data: {} }
+		]
+		var ret = [
+			{ clip: left2["offsetStepSize"] },
+			{ clip: left2["offsetStageOnly"] }
+		];
+		if (positions.length == 0) {
+			return ret;
+		}
+		var i = 0;
+		for (;i < positions.length; i++) {
+			var position = positions[i];
+			position.extra = ">";
+			position.rightClip = right4;
+			position.clip = positionArrObjs[i];
+			position.clip._visible = true;
+			ret.push(position);
+		}
+		for (; i < positionArrObjs.length; i++) {
+			positionArrObjs[i]._visible = false;
+		}
+		return ret;
+	}
+	private function getDebugLayout()
+	{
+		return [
+			{ clip: left3["exitMenu"] },
+			{ clip: left3["pauseAnimation"], func: SexLabAPI.PickRandomScene },
+			{ clip: left3["moveScene"], func: SexLabAPI.MoveScene },
+			{ clip: left3["endScene"], func: SexLabAPI.EndScene }
+		]
 	}
 
 	private function updateThreadLayout()
@@ -257,10 +313,30 @@ class DropdownMenu extends MovieClip
 		left1["offset"].init(getTextInit("$SSL_Offset", ">"));
 		left1["scenes"].init(getTextInit("$SSL_AlternateScenes", ">"));
 		left1["pickRandom"].init(getTextInit("$SSL_PickRandom", ""));
-		left1["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation"));
-		left1["toggleAutoplay"].init(getTextInit("$SSL_ToggleAutoplay"));
-		left1["moveScene"].init(getTextInit("$SSL_MoveScene"));
-		left1["endScene"].init(getTextInit("$SSL_EndScene", SexLabAPI.GetHotkeyCombination("endScene")));
+		left1["toggleAutoplay"].init(getTextInit("$SSL_ToggleAutoplay", SexLabAPI.IsAutoPlay()));
+	}
+	private function updatePositionLayout()
+	{
+		left2["offsetStepSize"].init(getTextInit("$SSL_StepSize", SexLabAPI.GetOffsetStepSize().toString(), true));
+		left2["offsetStageOnly"].init(getTextInit("$SSL_StageOnly", SexLabAPI.GetAdjustStageOnly() || true));
+		for (var i = 2; i < layout[1].length; i++) {
+			var position = layout[1][i]
+			position.clip.init(position);
+		}
+	}
+	private function updateDebugLayout()
+	{
+		left3["exitMenu"].init(getTextInit("$SSL_ExitMenu", "", true));
+		left3["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation"));
+		left3["moveScene"].init(getTextInit("$SSL_MoveScene"));
+		left3["endScene"].init(getTextInit("$SSL_EndScene", SexLabAPI.GetHotkeyCombination("endScene")));
+	}
+
+	private function toggleStageOnly()
+	{
+		var stageOnly = !SexLabAPI.GetAdjustStageOnly();
+		SexLabAPI.SetAdjustStageOnly(stageOnly);
+		left2["offsetStageOnly"].init(getTextInit("$SSL_StageOnly", stageOnly, true));
 	}
 
 }

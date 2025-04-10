@@ -19,11 +19,11 @@ class MenuRight2 extends MovieClip
 	private var activeSelectionIndex: Number = 0;
 
 	private var stepSizeValue: Number = 0.5;
-	private var stageOnlyValue: Boolean = false;
 
 	/* INITIALIZATION */
 	public function MenuRight2()
 	{
+		super();
 		selectables = [
 			stepSize,
 			stageOnly,
@@ -49,14 +49,10 @@ class MenuRight2 extends MovieClip
 
 	public function updateFields()
 	{
-		stepSizeValue = SexLabAPI.GetOffsetStepSize();
-		if (stepSizeValue == undefined) stepSizeValue = 0.5;	// Test value
-		stageOnlyValue = SexLabAPI.GetAdjustStagenOnly() || true;
-
 		furnitureType.init({ name: "$SSL_ActiveFurniture{" + SexLabAPI.GetActiveFurnitureName() + "}" });
 
-		stepSize.init({ name: "$SSL_StepSize", extra: stepSizeValue.toString() });
-		stageOnly.init({ name: "$SSL_StageOnly", extra: stageOnlyValue });
+		stepSize.init({ name: "$SSL_StepSize", extra: SexLabAPI.GetOffsetStepSize().toString() });
+		stageOnly.init({ name: "$SSL_StageOnly", extra: SexLabAPI.GetAdjustStageOnly() || true });
 		resetOffsets.init({ name: "$SSL_ResetOffsets" });
 
 		xOffset.init({ name: "X" });
@@ -86,7 +82,7 @@ class MenuRight2 extends MovieClip
 			return true;
 		case KeyType.UP:
 			if (selection.endInput != undefined && modes) {
-				selection.adjustOffset(stepSizeValue, true);
+				selection.adjustOffset(true);
 				return true;
 			}
 			selection.setSelected(false);
@@ -95,7 +91,7 @@ class MenuRight2 extends MovieClip
 			return true;
 		case KeyType.DOWN:
 			if (selection.endInput != undefined && modes) {
-				selection.adjustOffset(stepSizeValue, false);
+				selection.adjustOffset(false);
 				return true;
 			}
 			selection.setSelected(false);
@@ -104,10 +100,10 @@ class MenuRight2 extends MovieClip
 			return true;
 		case KeyType.SELECT:
 			if (selection == stepSize) {
-				selection.adjustOffset(stepSizeValue, !reset);
+				SexLabAPI.AdjustOffsetStepSize(!reset)
 				updateFields();
 			} else if (selection == stageOnly) {
-				SexLabAPI.SetAdjustStageOnly(!stageOnlyValue);
+				SexLabAPI.SetAdjustStageOnly(!SexLabAPI.GetAdjustStageOnly());
 				updateFields();
 			} else if (selection == resetOffsets) {
 				SexLabAPI.ResetOffsets();

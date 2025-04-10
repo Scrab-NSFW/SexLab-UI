@@ -95,8 +95,13 @@ class MenuEntryOffset extends MovieClip
 		return value.type == "input";
 	}
 
-	public function adjustOffset(stepSizeValue, isNegative): Void
+	public function adjustOffset(isNegative): Void
 	{
+		var stepSizeValue = SexLabAPI.GetOffsetStepSize();
+		if (stepSizeValue == undefined) {
+			trace("Adjusting Offset for " + value.keyIdx + ": No step size found, setting to 0.1");
+			stepSizeValue = 0.1;	// Should only happen during testing
+		}
 		var numValue = parseFloat(value.text);
 		if (isNaN(numValue)) {
 			trace("Adjusting Offset for " + value.keyIdx + ": Invalid input " + value.text + " , resetting to 0.0");
