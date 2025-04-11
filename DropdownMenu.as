@@ -1,6 +1,4 @@
-﻿import gfx.ui.InputDetails;
-import gfx.ui.NavigationCode;
-import gfx.events.EventDispatcher;
+﻿import gfx.events.EventDispatcher;
 
 import skyui.components.list.BasicEnumeration;
 
@@ -58,7 +56,7 @@ class DropdownMenu extends MovieClip
 		positionArrObjs = new Array();
 		for (var i = 0; i < 5; i++) {
 			positionArrObjs.push(left2.attachMovie(MENU_ENTRY, MENU_ENTRY + i, left2.getNextHighestDepth(), {
-				_x: left2.background._x + left2.background._width / 2, _y: MENU_TOP_BORDER + MENU_ENTRY_HEIGHT * i, _visible: true
+				_x: left2.background._x + left2.background._width / 2, _y: MENU_TOP_BORDER + MENU_ENTRY_HEIGHT * i, _visible: false
 			}));
 		}
 

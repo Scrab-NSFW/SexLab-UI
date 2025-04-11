@@ -12,16 +12,27 @@ class MenuRight3 extends ScrollingListInputEx
 		super();
 	}
 
+	/* SCENE LIST */
+
 	public function updateFields(): Void
 	{
-		entryList.clearList();
 		var scenes = SexLabAPI.GetAlternateScenes();
-		for (var i = 0; i < scenes.length; i++) {
-			var scene = scenes[i];
-			if (scene == undefined) {
+		updateFieldsCustom(scenes);
+	}
+
+	/* EXPRESSION & VOICE LIST */
+
+	public function updateFieldsCustom(arr)
+	{
+		clearList();
+		trace("updateFieldsCustom: " + clearList);
+		for (var i = 0; i < arr.length; i++) {
+			var obj = arr[i];
+			if (obj == undefined) {
+				trace("MenuRight3: updateFieldsCustom: Invalid object at index " + i);
 				continue;
 			}
-			entryList.push(scene);
+			entryList.push(obj);
 		}
 		InvalidateData();
 	}

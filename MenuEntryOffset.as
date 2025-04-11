@@ -10,6 +10,7 @@ class MenuEntryOffset extends MovieClip
 
 	/* PRIVATE VARIABLES */
 	private var _previousFocus;
+	private var _referenceId;
 
 	/* INITIALIZATION */
 	public function MenuEntryOffset()
@@ -20,12 +21,14 @@ class MenuEntryOffset extends MovieClip
 	public function init(initObj)
 	{
 		name.text = initObj.name;
+		_referenceId = initObj.referenceId;
 		selectIndicator._visible = initObj.selected != undefined ? initObj.selected : selectIndicator._visible;
 		var keyIdx = value.keyIdx = initObj.name.toLowerCase();
-		if (SexLabAPI.GetOffset(keyIdx) != undefined) {
-			value.text = SexLabAPI.GetOffset(keyIdx).toString();
+		var offset = SexLabAPI.GetOffset(keyIdx, _referenceId);
+		if (offset != undefined) {
+			value.text = offset.toString();
 		} else {
-			trace("Adjusting Offset for " + keyIdx + ": No value found, setting to 0.0");
+			trace("Adjusting Offset for " + _referenceId + "." + keyIdx + ": No value found, setting to 0.0");
 			value.text = "0.0";
 		}
 		value.type = "dynamic";
@@ -50,8 +53,8 @@ class MenuEntryOffset extends MovieClip
 				this.text = "0.0";
 				return;
 			}
-			trace("Adjusting Offset for " + keyIdx + ": " + numValue);
-			SexLabAPI.SetOffset(keyIdx, numValue);
+			trace("Adjusting Offset for " + _referenceId + "." + keyIdx + ": " + numValue);
+			SexLabAPI.SetOffset(keyIdx, numValue, _referenceId);
 		};
 	}
 
@@ -113,7 +116,7 @@ class MenuEntryOffset extends MovieClip
 			numValue += stepSizeValue;
 		}
 		value.text = numValue.toString();
-		SexLabAPI.SetOffset(value.keyIdx, numValue);
+		SexLabAPI.SetOffset(value.keyIdx, numValue, _referenceId);
 	}
 
 }

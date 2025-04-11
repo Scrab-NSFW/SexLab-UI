@@ -18,8 +18,6 @@ class MenuRight2 extends MovieClip
 	private var selectables: Array;
 	private var activeSelectionIndex: Number = 0;
 
-	private var stepSizeValue: Number = 0.5;
-
 	/* INITIALIZATION */
 	public function MenuRight2()
 	{
