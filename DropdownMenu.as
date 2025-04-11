@@ -1,4 +1,7 @@
-﻿import gfx.events.EventDispatcher;
+﻿import com.greensock.TweenLite;
+import com.greensock.TimelineLite;
+import com.greensock.easing.*;
+import gfx.events.EventDispatcher;
 
 import skyui.components.list.BasicEnumeration;
 
@@ -90,10 +93,30 @@ class DropdownMenu extends MovieClip
 		activeLayoutIdx = layoutIdx;
 		setActiveIdx(0);
 	}
+	
+	public function loadBackground(layoutIdx)
+	{
+		if (layoutIdx >= layout.length) {
+			trace("DropdownMenu: loadBackground: layoutIdx is out of bounds for index " + layoutIdx);
+			return;
+		}
+		var defaultOption = layout[layoutIdx][0];
+		if (defaultOption == undefined) {
+			trace("DropdownMenu: loadBackground: defaultOption is undefined for index 0");
+			return;
+		} else if (defaultOption.rightClip != undefined) {
+			background.gotoAndStop("double");
+		} else {
+			background.gotoAndStop("single");
+		}
+	}
 
 	/* GFX */
 	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
 	{
+		if (activeLayoutIdx == -1) {
+			return false;
+		}
 		if (activeRight) {
 			switch (keyStr) {
 			case KeyType.EXTRA1:
@@ -139,7 +162,8 @@ class DropdownMenu extends MovieClip
 			if (!activeRight) {
 				activeRight = activeLayout[activeLeftIdx].rightClip;
 				if (activeRight != undefined) {
-					this["left" + (activeLayoutIdx + 1)]._alpha = 30;
+					TweenLite.to(this["left" + (activeLayoutIdx + 1)], 0.2, { _alpha: 30 });
+					TweenLite.to(activeRight, 0.2, { _alpha: 100 });
 					activeRight.setDefault();
 				} else if (activeLayout[activeLeftIdx].func != undefined) {
 					activeLayout[activeLeftIdx].func();
@@ -192,6 +216,7 @@ class DropdownMenu extends MovieClip
 			if (newOption.rightClip.resetFields != undefined) {
 				newOption.rightClip.resetFields(newOption.id);
 			}
+			newOption.rightClip._alpha = 30;
 			newOption.rightClip._visible = true;
 			background.gotoAndStop("double");
 		} else {
@@ -204,8 +229,9 @@ class DropdownMenu extends MovieClip
 	public function focusLeft()
 	{
 		activeRight.resetSelection();
+		TweenLite.to(activeRight, 0.2, { _alpha: 30 });
+		TweenLite.to(this["left" + (activeLayoutIdx + 1)], 0.2, { _alpha: 100 });
 		activeRight = undefined;
-		this["left" + (activeLayoutIdx + 1)]._alpha = 100;
 	}
 
 	/* PRIVATE FUNCTIONS */
@@ -262,14 +288,7 @@ class DropdownMenu extends MovieClip
 	}
 	private function getLayoutPositions()
 	{
-		// var positions = SexLabAPI.GetPositions();
-		var positions = [
-			{ name: "P1", data: {} },
-			{ name: "P2", data: {} },
-			{ name: "P3", data: {} },
-			{ name: "P4", data: {} },
-			{ name: "P5", data: {} }
-		]
+		var positions = SexLabAPI.GetPositions();
 		var ret = [
 			{ clip: left2["offsetStepSize"] },
 			{ clip: left2["offsetStageOnly"] }

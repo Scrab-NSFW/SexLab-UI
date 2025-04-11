@@ -22,7 +22,6 @@ class Settings extends MovieClip
 	{
 		activeIdx = -1;
 		dropdownMenu._visible = false;
-		backgroundY = dropdownMenu.background._y;
 	}
 
 	public function onLoad()
@@ -30,6 +29,7 @@ class Settings extends MovieClip
 		menuSets = menuBar.textArr;
 		dropdownMenu._x = menuBar._x;
 		dropdownMenu._y = menuBar._y + (menuBar.background.background._height / 2) + 5;
+		backgroundY = dropdownMenu.background._y;
 	}
 
 	/* GFX */
@@ -61,16 +61,12 @@ class Settings extends MovieClip
 
 	public function slide(newIdx): Void
 	{
-		// NOTE: Animating menu blend it sometimes causes the menu to not properly shift into place (morphed on Y axis, and stuck in incorrect position)
-		// Additionally, the single/double page is updated too late, which would need to be addressed as well
-		// Lastly, I am unsure if the added delay for some visually effects is worth it here, as it causes the menu to be unresponsive for a bit longer than necessary
 		if (newIdx == activeIdx) {
 			return;
 		} else if (newIdx == -1) {
-			// TweenLite.to(dropdownMenu.background, 0.2, { _y: -dropdownMenu.background._height, onComplete: function(dropdownMenu, backgroundY) {
+			// TweenLite.to(dropdownMenu.background, 0.2, { _y: -dropdownMenu.background._height, onComplete: function(dropdownMenu) {
 			// 	dropdownMenu._visible = false;
-			// 	dropdownMenu.background._y = backgroundY;
-			// }, onCompleteParams: [dropdownMenu, backgroundY] });
+			// }, onCompleteParams: [dropdownMenu] });
 			dropdownMenu._visible = false;
 		} else {
 			var activeMenu = menuSets[newIdx];
@@ -79,12 +75,15 @@ class Settings extends MovieClip
 		if (activeIdx > -1) {
 			var previousMenu: TextField = menuSets[activeIdx];
 			previousMenu.text = previousMenu.text.substr(1, previousMenu.text.length - 2);
-			dropdownMenu.setLayout(newIdx);
+			if (dropdownMenu.background._y == backgroundY) {	// skip if animating (layout will be set afterwards)
+				dropdownMenu.setLayout(newIdx);
+			}
 		} else {
-			// TweenLite.from(dropdownMenu.background, 0.3, { _y: -dropdownMenu.background._height, onComplete: function(dropdownMenu, newIdx) {
-			// 	dropdownMenu.setLayout(newIdx);
-			// }, onCompleteParams: [dropdownMenu, newIdx] });
-			dropdownMenu.setLayout(newIdx);
+			dropdownMenu.background._y = -dropdownMenu.background._height;
+			dropdownMenu.loadBackground(newIdx);
+			TweenLite.to(dropdownMenu.background, 0.3, { _y: backgroundY, onComplete: function(self) {
+				self.dropdownMenu.setLayout(self.activeIdx);
+			}, onCompleteParams: [this] });
 			dropdownMenu._visible = true;
 		}
 		activeIdx = newIdx;

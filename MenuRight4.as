@@ -1,4 +1,7 @@
-﻿import gfx.events.EventDispatcher;
+﻿import com.greensock.TweenLite;
+import com.greensock.TimelineLite;
+import com.greensock.easing.*;
+import gfx.events.EventDispatcher;
 import skyui.components.list.BasicEnumeration;
 
 class MenuRight4 extends MovieClip
@@ -24,6 +27,7 @@ class MenuRight4 extends MovieClip
 	/* PRIVATE VARIABLES */
 	private var selectables: Array;
 	private var activeSelectionIndex: Number;
+	private var transitionDone: Boolean;
 	private var _referenceId: Number;
 
 	/* INITIALIZATION */
@@ -43,6 +47,7 @@ class MenuRight4 extends MovieClip
 			rOffset
 		];
 		activeSelectionIndex = -1;
+		transitionDone = true;
 
 		EventDispatcher.initialize(this);
 	}
@@ -81,6 +86,10 @@ class MenuRight4 extends MovieClip
 				SexLabAPI.SetExpression(_referenceId, item.id);
 			}
 		}
+		transitionDone = false;
+		TweenLite.from(selectables[activeSelectionIndex], 0.35, { _y: listHeader._y, onComplete: function(self) {
+			self.transitionDone = true;
+		}, onCompleteParams: [this]});
 		list._visible = false;
 		this._visible = true;
 	}
@@ -98,8 +107,6 @@ class MenuRight4 extends MovieClip
 	{
 		if (_referenceId == undefined) {
 			trace("MenuRight4: updateFields: No referenceId set");
-			// TODO: return on failure
-			_referenceId = 0;
 		}
 		var exprName = SexLabAPI.GetExpressionName(_referenceId);
 		var voiceName = SexLabAPI.GetVoiceName(_referenceId);
@@ -136,13 +143,16 @@ class MenuRight4 extends MovieClip
 	{
 		if (list._visible) {
 			if (keyStr == KeyType.END) {
-				onItemPress(undefined);
+				if (transitionDone)
+					onItemPress(undefined);
 				return true;
 			}
 			return list.handleInputEx(keyStr, modes, reset);
 		}
+		trace("MenuRight4: handleInputEx: keyStr = " + keyStr + ", modes = " + modes + ", reset = " + reset);
 		var selection = selectables[activeSelectionIndex];
 		if (selection.hasFocus != undefined && selection.hasFocus()) {
+			trace("MenuRight4: handleInputEx: selection has focus, calling endInput() " + selection);
 			if (keyStr == KeyType.END)
 				selection.endInput();
 			return true;
@@ -206,21 +216,14 @@ class MenuRight4 extends MovieClip
 	private function createList()
 	{
 		var selection = selectables[activeSelectionIndex];
-		listHeader.init({ name: selection.name.text });
-		// var arr = (selection == expression) ? SexLabAPI.GetExpressions(_referenceId) : SexLabAPI.GetVoices(_referenceId);
-		var arr = [
-			{ id: "1", name: "Expression 1" },
-			{ id: "2", name: "Expression 2" },
-			{ id: "3", name: "Expression 3" },
-			{ id: "4", name: "Expression 4" },
-			{ id: "5", name: "Expression 5" },
-			{ id: "6", name: "Expression 6" },
-			{ id: "7", name: "Expression 7" },
-			{ id: "8", name: "Expression 8" }
-		];
+		var arr = (selection == expression) ? SexLabAPI.GetExpressions(_referenceId) : SexLabAPI.GetVoices(_referenceId);
+		listHeader.init({ name: selection.name.text, extra: selection.value.text });
 		list.updateFieldsCustom(arr);
 		list.setDefault();
-		
+		transitionDone = false;
+		TweenLite.from(listHeader, 0.35, { _y: selection._y, onComplete: function(self) {
+			self.transitionDone = true;
+		}, onCompleteParams: [this]});
 		this._visible = false;
 		list._visible = true;
 	}

@@ -95,6 +95,7 @@ class MenuEntryOffset extends MovieClip
 
 	public function hasFocus()
 	{
+		trace("MenuEntryOffset: hasFocus: " + value.type + " == input: " + (value.type == "input"));
 		return value.type == "input";
 	}
 
