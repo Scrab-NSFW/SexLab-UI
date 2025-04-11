@@ -29,6 +29,7 @@ intrinsic class SexLabAPI
     static function MoveScene():Void;
     static function EndScene():Void;
 
+    static function GetPositions():Array;
     static function GetPermutationData(id: Number):Object;
     static function SelectNextPermutation(id: Number):Void;
     static function GetGhostMode(id: Number):Boolean;
