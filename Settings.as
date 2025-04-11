@@ -1,4 +1,6 @@
-﻿
+﻿import com.greensock.TweenLite;
+import com.greensock.TimelineLite;
+import com.greensock.easing.*;
 
 class Settings extends MovieClip
 {
@@ -13,12 +15,14 @@ class Settings extends MovieClip
 	/* PRIVATE VARIABLES */
 	private var menuSets: Array;
 	private var activeIdx: Number;
+	private var backgroundY: Number;
 
 	/* INITIALIZATION */
 	public function Settings()
 	{
 		activeIdx = -1;
 		dropdownMenu._visible = false;
+		backgroundY = dropdownMenu.background._y;
 	}
 
 	public function onLoad()
@@ -57,28 +61,35 @@ class Settings extends MovieClip
 
 	public function slide(newIdx): Void
 	{
+		// NOTE: Animating menu blend it sometimes causes the menu to not properly shift into place (morphed on Y axis, and stuck in incorrect position)
+		// Additionally, the single/double page is updated too late, which would need to be addressed as well
+		// Lastly, I am unsure if the added delay for some visually effects is worth it here, as it causes the menu to be unresponsive for a bit longer than necessary
 		if (newIdx == activeIdx) {
 			return;
+		} else if (newIdx == -1) {
+			// TweenLite.to(dropdownMenu.background, 0.2, { _y: -dropdownMenu.background._height, onComplete: function(dropdownMenu, backgroundY) {
+			// 	dropdownMenu._visible = false;
+			// 	dropdownMenu.background._y = backgroundY;
+			// }, onCompleteParams: [dropdownMenu, backgroundY] });
+			dropdownMenu._visible = false;
+		} else {
+			var activeMenu = menuSets[newIdx];
+			activeMenu.text = "<" + activeMenu.text + ">";
 		}
 		if (activeIdx > -1) {
 			var previousMenu: TextField = menuSets[activeIdx];
 			previousMenu.text = previousMenu.text.substr(1, previousMenu.text.length - 2);
+			dropdownMenu.setLayout(newIdx);
+		} else {
+			// TweenLite.from(dropdownMenu.background, 0.3, { _y: -dropdownMenu.background._height, onComplete: function(dropdownMenu, newIdx) {
+			// 	dropdownMenu.setLayout(newIdx);
+			// }, onCompleteParams: [dropdownMenu, newIdx] });
+			dropdownMenu.setLayout(newIdx);
+			dropdownMenu._visible = true;
 		}
-		if (newIdx == -1) {
-			activeIdx = -1;
-			return;
-		}
-		var activeMenu: TextField = menuSets[newIdx];
-		activeMenu.text = "<" + activeMenu.text + ">";
 		activeIdx = newIdx;
-		dropdownMenu.setLayout(newIdx);
-		dropdownMenu._visible = true;
 	}
 
-	public function closeMenu(): Void
-	{
-		dropdownMenu._visible = false;
-		slide(-1);
-	}
+	public function closeMenu(): Void { slide(-1); }
 
 }
