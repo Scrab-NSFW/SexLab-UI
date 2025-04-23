@@ -59,7 +59,6 @@ class MenuEntryInput extends MovieClip
 		if (!_previousFocus) {
 			return;
 		}
-		
 		inputField.type = "dynamic";
 		inputField.selectable = false;
 		

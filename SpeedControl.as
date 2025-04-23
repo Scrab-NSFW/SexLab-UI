@@ -9,13 +9,17 @@
 	var spdCounter: TextField;
 
 	/* VARIABLES */
-	var speedValues: Array = [0.5, 0.75, 1, 1.25, 1.5, 2, 3];
-	var speedIdx = 3;
+	var speedValues: Array;
+	var speedIdx;
+	var speedVal;
 
-	/* FUNCTIONS */
+	/* INIT */
 	public function SpeedControl()
 	{
 		super();
+		speedValues = [0.5, 0.75, 1, 1.25, 1.5, 2, 3];
+		speedIdx = 3;
+		speedVal = speedValues[speedIdx];
 
 		spdUpBtn.onRelease = function() {
 			_parent.changeSpeed(true);
@@ -26,19 +30,12 @@
 		};
 	}
 
-	public function setSpeedCounter(speed: Number)
-	{
-		var str = speed.toString(10);
-		var where = str.indexOf(".");
-		if (where != -1) {
-			str = str.substr(0, where + 3);
-		}
-		spdCounter.text = str;
-	}
-
+	/* FUNCTIONS */
 	public function changeSpeed(upOrDown: Boolean)
 	{
-		if (upOrDown) {
+		if (speedVal == 0) {
+			// paused, restore previous speed
+		} else if (upOrDown) {
 			speedIdx++;
 		} else {
 			speedIdx--;
@@ -48,7 +45,22 @@
 		} else if (speedIdx >= speedValues.length) {
 			speedIdx = speedValues.length - 1;
 		}
-		setSpeedCounter(speedValues[speedIdx]);
-		skse.SendModEvent("SL_SetSpeed", "", speedValues[speedIdx]);
+		// Feeds back into setSpeedCounter()
+		Main.UpdateSpeed(speedValues[speedIdx])
+	}
+
+	public function setSpeedCounter(speed: Number)
+	{
+		speedVal = speed;
+		if (speedVal == 0) {
+			spdCounter.text = "$SSL_Paused";
+			return;
+		}
+		var str = speed.toString(10);
+		var where = str.indexOf(".");
+		if (where != -1) {
+			str = str.substr(0, where + 3);
+		}
+		spdCounter.text = str;
 	}
 }

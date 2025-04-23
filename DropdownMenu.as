@@ -173,6 +173,12 @@ class DropdownMenu extends MovieClip
 					toggleStageOnly();
 				} else if (activeLayout[activeLeftIdx].clip == left3["exitMenu"]) {
 					_parent.closeMenu();
+				} else if (activeLayout[activeLeftIdx].clip == left3["pauseAnimation"]) {
+					Main.PauseScene();
+				} else if (activeLayout[activeLeftIdx].clip == left3["moveScene"]) {
+					Main.MoveScene();
+				} else if (activeLayout[activeLeftIdx].clip == left3["endScene"]) {
+					Main.EndScene();
 				} else {
 					trace("DropdownMenu: handleInputEx: rightClip is undefined for index " + activeLeftIdx);
 				}
@@ -314,9 +320,9 @@ class DropdownMenu extends MovieClip
 	{
 		return [
 			{ clip: left3["exitMenu"] },
-			{ clip: left3["pauseAnimation"], func: SexLabAPI.PickRandomScene },
-			{ clip: left3["moveScene"], func: SexLabAPI.MoveScene },
-			{ clip: left3["endScene"], func: SexLabAPI.EndScene }
+			{ clip: left3["pauseAnimation"] },
+			{ clip: left3["moveScene"] },
+			{ clip: left3["endScene"] }
 		]
 	}
 
@@ -343,10 +349,12 @@ class DropdownMenu extends MovieClip
 	}
 	private function updateDebugLayout()
 	{
-		left3["exitMenu"].init(getTextInit("$SSL_ExitMenu", "", true));
-		left3["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation"));
+		var endKey = SexLabAPI.GetHotkeyCombination(KeyType.END);
+		var modesKey = SexLabAPI.GetHotkeyCombination(KeyType.MODES);
+		left3["exitMenu"].init(getTextInit("$SSL_ExitMenu", endKey, true));
+		left3["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation", endKey + " + " + modesKey));
 		left3["moveScene"].init(getTextInit("$SSL_MoveScene"));
-		left3["endScene"].init(getTextInit("$SSL_EndScene", SexLabAPI.GetHotkeyCombination("endScene")));
+		left3["endScene"].init(getTextInit("$SSL_EndScene"));
 	}
 
 	private function toggleStageOnly()

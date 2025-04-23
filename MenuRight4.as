@@ -149,7 +149,6 @@ class MenuRight4 extends MovieClip
 			}
 			return list.handleInputEx(keyStr, modes, reset);
 		}
-		trace("MenuRight4: handleInputEx: keyStr = " + keyStr + ", modes = " + modes + ", reset = " + reset);
 		var selection = selectables[activeSelectionIndex];
 		if (selection.hasFocus != undefined && selection.hasFocus()) {
 			trace("MenuRight4: handleInputEx: selection has focus, calling endInput() " + selection);

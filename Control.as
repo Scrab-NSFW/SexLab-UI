@@ -95,10 +95,10 @@ class Control extends MovieClip
 			stages[i].tf2.text = (i + 1) + "}";
 			stages[i].id = arguments[i].id;
 			stages[i].onRollOver = function() {
-				_parent.selectStage(this);
+				_parent.selectStage(this, false);
 			};
 			stages[i].onRelease = function() {
-				_parent.selectStage(this, true);
+				_parent.selectStage(this, false, true);
 			};
 		}
 	}
@@ -131,12 +131,12 @@ class Control extends MovieClip
 				var index = getSelectedIndex();
 				if (index >= 0) {
 					index = (index + 1) % stages.length;
-					selectStage(stages[index], false);
+					selectStage(stages[index], reset, false);
 					return true;
 				}
 			}
 			if (stages.length > 0) {
-				selectStage(stages[0]);
+				selectStage(stages[0], reset);
 				return true;
 			}
 			break;
@@ -145,32 +145,32 @@ class Control extends MovieClip
 				var index = getSelectedIndex();
 				if (index >= 0) {
 					index = (index - 1 + stages.length) % stages.length;
-					selectStage(stages[index], false);
+					selectStage(stages[index], reset, false);
 					return true;
 				}
 			}
 			if (stages.length > 0) {
-				selectStage(stages[stages.length - 1]);
+				selectStage(stages[stages.length - 1], reset);
 				return true;
 			}
 			break;
 		case KeyType.PAGE_DOWN:
 			if (stages.length > 0) {
-				selectStage(stages[0]);
+				selectStage(stages[0], reset);
 				return true;
 			}
 			break;
 		case KeyType.PAGE_UP:
 			if (stages.length > 0) {
-				selectStage(stages[stages.length - 1]);
+				selectStage(stages[stages.length - 1], reset);
 				return true;
 			}
 			break;
 		case KeyType.SELECT:
 			if (stages.length > 0 && !selectedStage) {
-				selectStage(stages[0]);
+				selectStage(stages[0], reset);
 			}
-			advanceStage();
+			advanceStage(reset);
 			return true;
 		case KeyType.N1:
 		case KeyType.N2:
@@ -183,7 +183,7 @@ class Control extends MovieClip
 		case KeyType.N9:
 			var idx = parseInt(str.charAt(1));
 			if (idx > 0 && idx <= stages.length) {
-				selectStage(stages[idx - 1]);
+				selectStage(stages[idx - 1], false);
 				return true;
 			}
 			break;
@@ -191,28 +191,8 @@ class Control extends MovieClip
 		return false;
 	}
 
-	public function handleInput(details: InputDetails, pathToFocus: Array): Boolean
-	{
-		// COMEBACK: Should remaining cases also be supported in the new input system?
-		// var select = function(idx) {
-		// 	var targetStage = undefined
-		// 	if (stages.length > idx) {
-		// 		targetStage = stages[idx];
-		// 	}
-		// 	if (!targetStage) {
-		// 		return false;
-		// 	} else if (targetStage == selectedStage) {
-		// 		advanceStage();
-		// 	} else {
-		// 		selectStage(targetStage);
-		// 	}
-		// 	return true;
-		// }
-		return false;
-	}
-
 	/* PRIVATE */
-	private function selectStage(stage: MovieClip, advance: Boolean)
+	private function selectStage(stage: MovieClip, reverse: Boolean, advance: Boolean)
 	{
 		for (var i = 0; i < stages.length; i++) {
 			if (stages[i] == stage) {
@@ -222,17 +202,18 @@ class Control extends MovieClip
 				selectedStage = stage;
 				TweenLite.to(stage.selectIndicator, 0.2, { _alpha: 100 });
 				if (advance == true) {
-					advanceStage();
+					advanceStage(reverse);
 				}
 				break;
 			}
 		}
 	}
 
-	private function advanceStage()
+	private function advanceStage(reverse: Boolean)
 	{
 		var id = selectedStage ? selectedStage.id : "";
-		skse.SendModEvent("SL_StageAdvance", id, 0);
+		var rev = reverse ? 1 : 0;
+		Main.AdvanceScene(id, rev);
 	}
 
 	private function getSelectedIndex(): Number

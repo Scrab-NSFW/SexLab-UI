@@ -3,7 +3,6 @@
 class MenuRight1 extends MovieClip
 {
 	/* STAGE ELEMENTS */
-	
 	public var name: MovieClip;
 	public var author: MovieClip;
 	public var originPackage: MovieClip;
@@ -11,9 +10,9 @@ class MenuRight1 extends MovieClip
 	public var annotations: MovieClip;
 
 	/* PRIVATE VARIABLES */
+	private var _annotations: String;
 
 	/* INITIALIZATION */
-	
 	public function MenuRight1()
 	{
 		super();
@@ -41,6 +40,7 @@ class MenuRight1 extends MovieClip
 
 	public function setDefault()
 	{
+		_annotations = annotations.getText();
 		annotations.setSelected(true);
 		annotations.setFocus();
 	}
@@ -48,8 +48,10 @@ class MenuRight1 extends MovieClip
 	public function resetSelection()
 	{
 		annotations.setSelected(false);
-		SexLabAPI.SetActiveSceneAnnotations(annotations.getText());
 		annotations.endInput();
+		if (_annotations != annotations.getText()) {
+			Main.SetSceneAnnotations(annotations.getText());
+		}
 	}
 	
 	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean

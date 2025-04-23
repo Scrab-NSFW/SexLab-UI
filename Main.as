@@ -32,7 +32,6 @@ class Main extends MovieClip
 		setLocation(sliders, 0, 1)
 		setLocation(control, 1, 1)
 
-		_global.testing = true;
 		// setTimeout(Delegate.create(this, test), 2000);
 	}
 
@@ -130,23 +129,20 @@ class Main extends MovieClip
 		control.setTimer(time);
 	}
 
-	public function setSpeedCounter(speed: Number)
-	{
-		control.speedControl.setSpeedCounter(speed);
-	}
-
 	/* GFX */
 	public function handleInputEx(str: String, modes: Boolean, reset: Boolean): Void
 	{
-		str = str.toLowerCase();
-		trace("Main.handleInputEx(" + str + ")");
+		trace("Main.handleInputEx(" + str + ", " + modes + ", " + reset + ")");
 		if (settings.handleInputEx(str, modes, reset))
 			return;
 		if (control.handleInputEx(str, modes, reset))
 			return;
 		if (str == KeyType.END) {
-			SexLabAPI.EndScene();
-			trace("SL_EndScene");
+			if (modes) {
+				PauseScene();
+			} else {
+				EndScene();
+			}
 			return;
 		}
 	}
@@ -182,7 +178,7 @@ class Main extends MovieClip
 			retVal = handleInputEx(KeyType.SELECT, modes, reset);
 			break;
 		default:
-			var keyStr = KeyMap.string_from_gfx(details.code);
+			var keyStr = KeyMap.string_from_gfx(details.code).toLowerCase();
 			if (keyStr == null)
 				return false;
 			else if (keyStr == "LeftShift")
@@ -205,6 +201,49 @@ class Main extends MovieClip
 		}
 		modes = reset = false;
 		return retVal;
+	}
+
+	/* UI Control */
+	static public function AdvanceScene(stageId, rev): Void
+	{
+		skse.SendModEvent("SL_AdvanceScene", stageId, rev);
+	}
+
+	static public function PauseScene(): Void
+	{
+		UpdateSpeed(0);
+	}
+
+	static public function UpdateSpeed(speed: Number): Void
+	{
+		_root.main.control.speedControl.setSpeedCounter(speed);
+		skse.SendModEvent("SL_SetSpeed", "", speed);
+	}
+
+	static public function MoveScene(): Void
+	{
+		skse.SendModEvent("SL_MoveScene");
+	}
+
+	static public function EndScene(): Void
+	{
+		skse.SendModEvent("SL_EndScene");
+	}
+
+	static public function SetSceneAnnotations(annotations: String): Void
+	{
+		skse.SendModEvent("SL_SetAnnotations", annotations);
+	}
+
+	static public function SetOffset(idx: String, value: Number, id: Number): Void
+	{
+		skse.SendModEvent("SL_SetOffset", idx, value, id);
+	}
+
+	// TODO: This currently isnt implemented
+	static public function AdjustOffset(idx: String, value: Number, id: Number): Void
+	{
+		skse.SendModEvent("SL_StartAdjustOffset", idx, value, id);
 	}
 
 }

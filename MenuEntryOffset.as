@@ -46,7 +46,6 @@ class MenuEntryOffset extends MovieClip
 			}
 		};
 		value.onKillFocus = function() {
-			trace("Adjusting Offset for " + keyIdx + ": " + this.text);
 			var numValue = parseFloat(this.text);
 			if (isNaN(numValue)) {
 				trace("Adjusting Offset for " + keyIdx + ": Invalid input " + value.text + " , resetting to 0.0");
@@ -54,7 +53,7 @@ class MenuEntryOffset extends MovieClip
 				return;
 			}
 			trace("Adjusting Offset for " + _referenceId + "." + keyIdx + ": " + numValue);
-			SexLabAPI.SetOffset(keyIdx, numValue, _referenceId);
+			Main.SetOffset(value.keyIdx, numValue, _referenceId);
 		};
 	}
 
@@ -95,7 +94,6 @@ class MenuEntryOffset extends MovieClip
 
 	public function hasFocus()
 	{
-		trace("MenuEntryOffset: hasFocus: " + value.type + " == input: " + (value.type == "input"));
 		return value.type == "input";
 	}
 
@@ -117,7 +115,7 @@ class MenuEntryOffset extends MovieClip
 			numValue += stepSizeValue;
 		}
 		value.text = numValue.toString();
-		SexLabAPI.SetOffset(value.keyIdx, numValue, _referenceId);
+		Main.SetOffset(value.keyIdx, numValue, _referenceId);
 	}
 
 }
