@@ -48,12 +48,12 @@ class Main extends MovieClip
 			{name: "Stage 5", id: 5},
 			{name: "Stage 6", id: 6}
 		);
-		setSliders(
-			{name: "Slider 1", id: 0},
-			{name: "Slider 2", id: 1},
-			{name: "Slider 3", id: 2},
-			{name: "Slider 4", id: 3},
-			{name: "Slider 5", id: 4}
+		updatePositions(
+			{name: "Slider 1", id: 0, submissive: true},
+			{name: "Slider 2", id: 1, submissive: false},
+			{name: "Slider 3", id: 2, submissive: true},
+			{name: "Slider 4", id: 3, submissive: true},
+			{name: "Slider 5", id: 4, submissive: false}
 		);
 		
 		setTimeout(Delegate.create(this, test2), 10 * 1000);
@@ -63,7 +63,7 @@ class Main extends MovieClip
 		for (var i = 0; i < 10; i++)
 			ShowMessage("test 456");
 
-		setSliders(
+		updatePositions(
 			{name: "YAY", id: 7},
 			{name: "HAHAHAHAHA4", id: 6}
 		);
@@ -96,6 +96,13 @@ class Main extends MovieClip
 		messages.Update();
 	}
 
+	/* PUBLIC FUNCTIONS */
+	public function updatePositions(/* args */)
+	{
+		sliders.setSliders.apply(sliders, arguments);
+		settings.updatePositions.apply(settings, arguments);
+	}
+
 	/* MESSAGES */
 	public function ShowMessage(message:String)
 	{
@@ -103,10 +110,6 @@ class Main extends MovieClip
 	}
 
 	/* SLIDERS */
-	public function setSliders(/* args */)
-	{
-		sliders.setSliders.apply(sliders, arguments);
-	}
 
 	public function updateSliderPct(id: Number, enj: Number)
 	{
@@ -127,6 +130,12 @@ class Main extends MovieClip
 	public function setTimer(time: Number)
 	{
 		control.setTimer(time);
+	}
+
+	/* SETTINGS */
+	public function setActiveScene(scene: Object): Void
+	{
+		settings.setActiveScene(scene);
 	}
 
 	/* GFX */
@@ -181,21 +190,21 @@ class Main extends MovieClip
 			var keyStr = KeyMap.string_from_gfx(details.code).toLowerCase();
 			if (keyStr == null)
 				return false;
-			else if (keyStr == "LeftShift")
+			else if (keyStr == "leftshift")
 				return !(modes = true);
-			else if (keyStr == "LeftControl")
+			else if (keyStr == "leftcontrol")
 				return !(reset = true);
-			else if (keyStr == "Q") {
+			else if (keyStr == "q") {
 				retVal = handleInputEx(KeyType.EXTRA1, modes, reset);
 				break;
-			} else if (keyStr == "E") {
+			} else if (keyStr == "e") {
 				retVal = handleInputEx(KeyType.EXTRA2, modes, reset);
 				break;
-			} else if (keyStr == "LeftAlt") {
+			} else if (keyStr == "leftalt") {
 				retVal = handleInputEx(KeyType.MOUSE, modes, reset);
 				break;
 			} else {
-				retVal = handleInputEx(keyStr);
+				retVal = handleInputEx(keyStr, modes, reset);
 				break;
 			}
 		}
@@ -204,45 +213,59 @@ class Main extends MovieClip
 	}
 
 	/* UI Control */
+	static public function SetActiveScene(id: String): Void
+	{
+		trace("Main.SetActiveScene(" + id + ")");
+		skse.SendModEvent("SL_SetActiveScene", id);
+	}
+
 	static public function AdvanceScene(stageId, rev): Void
 	{
+		trace("Main.AdvanceScene(" + stageId + ", " + rev + ")");
 		skse.SendModEvent("SL_AdvanceScene", stageId, rev);
 	}
 
 	static public function PauseScene(): Void
 	{
+		trace("Main.PauseScene()");
 		UpdateSpeed(0);
 	}
 
 	static public function UpdateSpeed(speed: Number): Void
 	{
+		trace("Main.UpdateSpeed(" + speed + ")");
 		_root.main.control.speedControl.setSpeedCounter(speed);
 		skse.SendModEvent("SL_SetSpeed", "", speed);
 	}
 
 	static public function MoveScene(): Void
 	{
+		trace("Main.MoveScene()");
 		skse.SendModEvent("SL_MoveScene");
 	}
 
 	static public function EndScene(): Void
 	{
+		trace("Main.EndScene()");
 		skse.SendModEvent("SL_EndScene");
 	}
 
 	static public function SetSceneAnnotations(annotations: String): Void
 	{
+		trace("Main.SetSceneAnnotations(" + annotations + ")");
 		skse.SendModEvent("SL_SetAnnotations", annotations);
 	}
 
 	static public function SetOffset(idx: String, value: Number, id: Number): Void
 	{
+		trace("Main.SetOffset(" + idx + ", " + value + ", " + id + ")");
 		skse.SendModEvent("SL_SetOffset", idx, value, id);
 	}
 
 	// TODO: This currently isnt implemented
 	static public function AdjustOffset(idx: String, value: Number, id: Number): Void
 	{
+		trace("Main.AdjustOffset(" + idx + ", " + value + ", " + id + ")");
 		skse.SendModEvent("SL_StartAdjustOffset", idx, value, id);
 	}
 

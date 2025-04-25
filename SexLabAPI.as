@@ -2,13 +2,8 @@ intrinsic class SexLabAPI
 {
     static function GetHotkeyCombination(id: String):String;
 
-    static function GetActiveSceneName():String;
-    static function GetActiveSceneAuthor():String;
-    static function GetActiveSceneOrigin():String;
-    static function GetActiveSceneTags():String;
-    static function GetActiveAnnotations():String;
+    static function GetAlternateScenes():Array;
     static function GetActiveFurnitureName():String;
-
     static function GetOffset(idx: String, id: Number):Number;
     static function ResetOffsets(id: Number):Void;
 	static function GetOffsetStepSize():Number;
@@ -16,14 +11,9 @@ intrinsic class SexLabAPI
     static function GetAdjustStageOnly():Boolean;
     static function SetAdjustStageOnly(value: Boolean):Void;
 
-    static function GetAlternateScenes():Array;
-    static function SetActiveScene(id: String):Void;
-    static function PickRandomScene():Void;
-
     static function ToggleAutoPlay():Void;
     static function IsAutoPlay():Boolean;
 
-    static function GetPositions():Array;
     static function GetPermutationData(id: Number):Object;
     static function SelectNextPermutation(id: Number):Void;
     static function GetGhostMode(id: Number):Boolean;

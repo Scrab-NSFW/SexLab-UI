@@ -27,6 +27,7 @@ class DropdownMenu extends MovieClip
 	public var right4: MovieClip;
 
 	/* PRIVATE VARIABLES */
+	private var positions: Array;
 	private var positionArrObjs: Array;
 	private var layout: Array;
 	private var activeLayoutIdx: Number;
@@ -77,6 +78,20 @@ class DropdownMenu extends MovieClip
 	}
 
 	/* PUBLIC FUNCTIONS */
+	public function setActiveScene(scene: Object): Void
+	{
+		right1.setActiveScene(scene);
+		right1.updateFields();
+	}
+
+	public function updatePositions(/* args... */): Void
+	{
+		trace("DropdownMenu: updatePositions: args = " + arguments);
+		positions = arguments;
+		layout = getLayout();
+		updatePositionLayout();
+	}
+
 	public function setLayout(layoutIdx)
 	{
 		if (layoutIdx >= layout.length) {
@@ -167,6 +182,8 @@ class DropdownMenu extends MovieClip
 					activeRight.setDefault();
 				} else if (activeLayout[activeLeftIdx].func != undefined) {
 					activeLayout[activeLeftIdx].func();
+				} else if (activeLayout[activeLeftIdx].clip == left1["pickRandom"]) {
+					Main.SetActiveScene("");
 				} else if (activeLayout[activeLeftIdx].clip == left2["offsetStepSize"]) {
 					SexLabAPI.AdjustOffsetStepSize(!reset);
 				} else if (activeLayout[activeLeftIdx].clip == left2["offsetStageOnly"]) {
@@ -253,8 +270,7 @@ class DropdownMenu extends MovieClip
 
 	public function onItemPressAlternate(eventObj)
 	{
-		trace("onItemPressAlternate: " + eventObj.entry.name);
-		SexLabAPI.SetActiveScene(eventObj.entry.id);
+		Main.SetActiveScene(eventObj.entry.id);
 	}
 
 	/* LAYOUT */
@@ -288,13 +304,12 @@ class DropdownMenu extends MovieClip
 			{ clip: left1["info"], rightClip: right1 },
 			{ clip: left1["offset"], rightClip: right2 },
 			{ clip: left1["scenes"], rightClip: right3 },
-			{ clip: left1["pickRandom"], func: SexLabAPI.PickRandomScene },
+			{ clip: left1["pickRandom"] },
 			{ clip: left1["toggleAutoplay"], func: SexLabAPI.ToggleAutoPlay }
 		];
 	}
 	private function getLayoutPositions()
 	{
-		var positions = SexLabAPI.GetPositions();
 		var ret = [
 			{ clip: left2["offsetStepSize"] },
 			{ clip: left2["offsetStageOnly"] }
@@ -309,6 +324,9 @@ class DropdownMenu extends MovieClip
 			position.rightClip = right4;
 			position.clip = positionArrObjs[i];
 			position.clip._visible = true;
+			if (position.submissive) {
+				position.name = "[S] " + position.name;
+			}
 			ret.push(position);
 		}
 		for (; i < positionArrObjs.length; i++) {
@@ -351,10 +369,10 @@ class DropdownMenu extends MovieClip
 	{
 		var endKey = SexLabAPI.GetHotkeyCombination(KeyType.END);
 		var modesKey = SexLabAPI.GetHotkeyCombination(KeyType.MODES);
-		left3["exitMenu"].init(getTextInit("$SSL_ExitMenu", endKey, true));
+		left3["exitMenu"].init(getTextInit("$SSL_ExitMenu", "", true));
 		left3["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation", endKey + " + " + modesKey));
 		left3["moveScene"].init(getTextInit("$SSL_MoveScene"));
-		left3["endScene"].init(getTextInit("$SSL_EndScene"));
+		left3["endScene"].init(getTextInit("$SSL_EndScene", endKey + ""));
 	}
 
 	private function toggleStageOnly()

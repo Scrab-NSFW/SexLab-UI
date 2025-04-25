@@ -30,6 +30,23 @@ class Settings extends MovieClip
 		dropdownMenu._x = menuBar._x;
 		dropdownMenu._y = menuBar._y + (menuBar.background.background._height / 2) + 5;
 		backgroundY = dropdownMenu.background._y;
+
+		_yscale = _xscale = 110;
+	}
+
+	/* PUBLIC FUNCTIONS */
+	public function setActiveScene(scene: Object): Void
+	{
+		if (scene == undefined) {
+			trace("Settings: setActiveScene: scene is undefined");
+			scene = { name: "", author: "", package: "", tags: "", annotations: "" };
+		}
+		dropdownMenu.setActiveScene(scene);
+	}
+
+	public function updatePositions(/* args... */): Void
+	{
+		dropdownMenu.updatePositions.apply(dropdownMenu, arguments);
 	}
 
 	/* GFX */

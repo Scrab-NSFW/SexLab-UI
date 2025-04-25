@@ -11,6 +11,7 @@ class MenuRight1 extends MovieClip
 
 	/* PRIVATE VARIABLES */
 	private var _annotations: String;
+	private var _activeScene: Object;
 
 	/* INITIALIZATION */
 	public function MenuRight1()
@@ -18,24 +19,19 @@ class MenuRight1 extends MovieClip
 		super();
 	}
 
+	/* PUBLIC FUNCTIONS */
+	public function setActiveScene(scene: Object): Void
+	{
+		_activeScene = scene;
+	}
+
 	public function updateFields()
 	{
-		var sceneName = SexLabAPI.GetActiveSceneName();
-		var authorName = SexLabAPI.GetActiveSceneAuthor();
-		var packageName = SexLabAPI.GetActiveSceneOrigin();
-		var tagStr = SexLabAPI.GetActiveSceneTags();
-		var annotationStr = SexLabAPI.GetActiveAnnotations();
-		if (sceneName == undefined) sceneName = "None";
-		if (authorName == undefined) authorName = "None";
-		if (packageName == undefined) packageName = "None";
-		if (tagStr == undefined) tagStr = "";
-		if (annotationStr == undefined) annotationStr = "";
-
-		name.init({ name: "$SSL_Name", align: "left", extra: sceneName });
-		author.init({ name: "$SSL_Author", align: "left", extra: authorName });
-		originPackage.init({ name: "$SSL_Package", align: "left", extra: packageName });
-		tags.init({ name: "$SSL_Tags", content: tagStr });
-		annotations.init({ name: "$SSL_CustomTags", content: annotationStr });
+		name.init({ name: "$SSL_Name", align: "left", extra: _activeScene.name });
+		author.init({ name: "$SSL_Author", align: "left", extra: _activeScene.author });
+		originPackage.init({ name: "$SSL_Package", align: "left", extra: _activeScene.package });
+		tags.init({ name: "$SSL_Tags", content: _activeScene.tags });
+		annotations.init({ name: "$SSL_CustomTags", content: _activeScene.annotations });
 	}
 
 	public function setDefault()
