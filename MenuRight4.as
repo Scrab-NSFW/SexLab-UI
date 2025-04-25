@@ -113,9 +113,9 @@ class MenuRight4 extends MovieClip
 		var permutationData = SexLabAPI.GetPermutationData(_referenceId);
 		if (exprName == undefined) exprName = "None";
 		if (voiceName == undefined) voiceName = "None";
-		if (permutationData == undefined) permutationData = { current: 0, total: 0 };
+		if (permutationData == undefined) permutationData = "0/0";
 
-		permutation.init({ name: "$SSL_Permutation", extra: permutationData.current + "/" + permutationData.total });
+		permutation.init({ name: "$SSL_Permutation", extra: permutationData });
 		ghostMode.init({ name: "$SSL_GhostMode", extra: SexLabAPI.GetGhostMode(_referenceId).toString() });
 		expression.init({ name: "$SSL_Expression", align: "left", extra: exprName });
 		voice.init({ name: "$SSL_Voice", align: "left", extra: voiceName });

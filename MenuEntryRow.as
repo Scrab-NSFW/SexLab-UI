@@ -42,6 +42,11 @@ class MenuEntryRow extends skyui.components.list.BasicListEntry
 		selectIndicator._visible = selected;
 	}
 
+	public function updateValue(extra: String): Void
+	{
+		value.text = extra;
+	}
+
 	/* BASIC LIST FUNCTIONS */
 
 	public function setEntry(a_entryObject: Object, a_state: ListState): Void

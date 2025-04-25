@@ -26,9 +26,10 @@ class MenuEntryOffset extends MovieClip
 		var keyIdx = value.keyIdx = initObj.name.toLowerCase();
 		var offset = SexLabAPI.GetOffset(keyIdx, _referenceId);
 		if (offset != undefined) {
+			trace("Initializing Offset for " + _referenceId + "." + keyIdx + ": " + offset);
 			value.text = offset.toString();
 		} else {
-			trace("Adjusting Offset for " + _referenceId + "." + keyIdx + ": No value found, setting to 0.0");
+			trace("Initializing Offset for " + _referenceId + "." + keyIdx + ": No value found, setting to 0.0");
 			value.text = "0.0";
 		}
 		value.type = "dynamic";

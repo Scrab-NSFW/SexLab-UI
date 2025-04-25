@@ -50,7 +50,7 @@ class MenuRight2 extends MovieClip
 		furnitureType.init({ name: "$SSL_ActiveFurniture{" + SexLabAPI.GetActiveFurnitureName() + "}" });
 
 		stepSize.init({ name: "$SSL_StepSize", extra: SexLabAPI.GetOffsetStepSize().toString() });
-		stageOnly.init({ name: "$SSL_StageOnly", extra: SexLabAPI.GetAdjustStageOnly() || true });
+		stageOnly.init({ name: "$SSL_StageOnly", extra: SexLabAPI.GetAdjustStageOnly().toString() });
 		resetOffsets.init({ name: "$SSL_ResetOffsets" });
 
 		xOffset.init({ name: "X" });

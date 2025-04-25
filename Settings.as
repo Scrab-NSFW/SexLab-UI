@@ -31,7 +31,7 @@ class Settings extends MovieClip
 		dropdownMenu._y = menuBar._y + (menuBar.background.background._height / 2) + 5;
 		backgroundY = dropdownMenu.background._y;
 
-		_yscale = _xscale = 110;
+		_yscale = _xscale = 130;
 	}
 
 	/* PUBLIC FUNCTIONS */
