@@ -82,8 +82,10 @@ class MenuRight4 extends MovieClip
 			}
 			if (selectables[activeSelectionIndex] == this.voice) {
 				SexLabAPI.SetVoice(_referenceId, item.id);
+				voice.updateValue(item.name);
 			} else {
 				SexLabAPI.SetExpression(_referenceId, item.id);
+				expression.updateValue(item.name);
 			}
 		}
 		transitionDone = false;
@@ -216,6 +218,7 @@ class MenuRight4 extends MovieClip
 	{
 		var selection = selectables[activeSelectionIndex];
 		var arr = (selection == expression) ? SexLabAPI.GetExpressions(_referenceId) : SexLabAPI.GetVoices(_referenceId);
+		arr = arr.sortOn("name", Array.CASEINSENSITIVE | Array.NUMERIC);
 		listHeader.init({ name: selection.name.text, extra: selection.value.text });
 		list.updateFieldsCustom(arr);
 		list.setDefault();
