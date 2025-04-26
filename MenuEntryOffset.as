@@ -119,4 +119,25 @@ class MenuEntryOffset extends MovieClip
 		Main.SetOffset(value.keyIdx, numValue, _referenceId);
 	}
 
+	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
+	{
+		if (!modes) {
+			return hasFocus();
+		}
+		switch (keyStr) {
+		case KeyType.DOWN:
+		case KeyType.RIGHT:
+			adjustOffset(true);
+			return true;
+		case KeyType.UP:
+		case KeyType.LEFT:
+			adjustOffset(false);
+			return true;
+		case KeyType.END:
+			endInput();
+			return true;
+		default:
+			return hasFocus();
+		}
+	}
 }

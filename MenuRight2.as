@@ -70,7 +70,7 @@ class MenuRight2 extends MovieClip
 		if (selection.hasFocus != undefined && selection.hasFocus()) {
 			if (keyStr == KeyType.END)
 				selection.endInput();
-			return true;
+			return selection.handleInput(keyStr, modes, reset);
 		}
 		switch (keyStr) {
 		case KeyType.PAGE_UP:

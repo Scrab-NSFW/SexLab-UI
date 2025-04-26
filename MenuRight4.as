@@ -123,6 +123,11 @@ class MenuRight4 extends MovieClip
 		voice.init({ name: "$SSL_Voice", align: "left", extra: voiceName });
 
 		resetOffsets.init({ name: "$SSL_ResetOffsets" });
+		updateOffsetFields();
+	}
+
+	public function updateOffsetFields()
+	{
 		xOffset.init({ name: "X", referenceId: _referenceId });
 		yOffset.init({ name: "Y", referenceId: _referenceId });
 		zOffset.init({ name: "Z", referenceId: _referenceId });
@@ -144,7 +149,7 @@ class MenuRight4 extends MovieClip
 	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
 	{
 		if (list._visible) {
-			if (keyStr == KeyType.END) {
+			if (keyStr == KeyType.END || keyStr == KeyType.LEFT) {
 				if (transitionDone)
 					onItemPress(undefined);
 				return true;
@@ -153,10 +158,9 @@ class MenuRight4 extends MovieClip
 		}
 		var selection = selectables[activeSelectionIndex];
 		if (selection.hasFocus != undefined && selection.hasFocus()) {
-			trace("MenuRight4: handleInputEx: selection has focus, calling endInput() " + selection);
 			if (keyStr == KeyType.END)
 				selection.endInput();
-			return true;
+			return selection.handleInputEx(keyStr, modes, reset);
 		}
 		switch (keyStr) {
 		case KeyType.PAGE_UP:
@@ -199,16 +203,17 @@ class MenuRight4 extends MovieClip
 	{
 		var selection = selectables[activeSelectionIndex];
 		if (selection == permutation) {
-			SexLabAPI.SelectNextPermutation(_referenceId);
-			updateFields();
+			var newPermutation = SexLabAPI.SelectNextPermutation(_referenceId);
+			permutation.updateValue(newPermutation);
 		} else if (selection == ghostMode) {
-			SexLabAPI.SetGhostMode(_referenceId, !SexLabAPI.GetGhostMode(_referenceId));
-			updateFields();
+			var newValue = !SexLabAPI.GetGhostMode(_referenceId);
+			SexLabAPI.SetGhostMode(_referenceId, newValue);
+			ghostMode.updateValue(newValue.toString());
 		} else if (selection == expression || selection == voice) {
 			createList();
 		} else if (selection == resetOffsets) {
 			SexLabAPI.ResetOffsets(_referenceId);
-			updateFields();
+			updateOffsetFields();
 		} else if (selection.setFocus != undefined) {
 			selection.setFocus();
 		}
