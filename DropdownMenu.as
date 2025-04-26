@@ -17,7 +17,7 @@ class DropdownMenu extends MovieClip
 
 	/* STAGE ELEMENTS */
 	public var background: MovieClip;
-	
+
 	public var left1: MovieClip;
 	public var left2: MovieClip;
 	public var left3: MovieClip;
@@ -90,9 +90,6 @@ class DropdownMenu extends MovieClip
 	public function updateLayout()
 	{
 		layout = getLayout();
-		updateThreadLayout();
-		updatePositionLayout();
-		updateDebugLayout();
 	}
 
 	public function setLayout(layoutIdx)
@@ -111,7 +108,7 @@ class DropdownMenu extends MovieClip
 		activeLayoutIdx = layoutIdx;
 		setActiveIdx(0);
 	}
-	
+
 	public function loadBackground(layoutIdx)
 	{
 		if (layoutIdx >= layout.length) {
@@ -290,20 +287,9 @@ class DropdownMenu extends MovieClip
 	}
 
 	/* LAYOUT */
-
 	private function getTextInit(name, extra, selected)
 	{
 		return { name: name, extra: extra.toString(), selected: selected != undefined ? selected : false };
-	}
-
-	private function getInputInit(name, content, selected)
-	{
-		return { name: name, content: content, selected: selected };
-	}
-
-	private function getListInit(name, content)
-	{
-		return { name: name, content: content };
 	}
 
 	private function getLayout()
@@ -312,10 +298,20 @@ class DropdownMenu extends MovieClip
 			getLayoutThread(),
 			getLayoutPositions(),
 			getDebugLayout()
-		]
+		];
 	}
 	private function getLayoutThread()
 	{
+		right1.updateFields();
+		right2.updateFields();
+		right3.updateFields();
+
+		left1["info"].init(getTextInit("$SSL_SceneInfo", ">", true));
+		left1["offset"].init(getTextInit("$SSL_Offset", ">"));
+		left1["scenes"].init(getTextInit("$SSL_AlternateScenes", ">"));
+		left1["pickRandom"].init(getTextInit("$SSL_PickRandom", ""));
+		left1["toggleAutoplay"].init(getTextInit("$SSL_ToggleAutoplay", SexLabAPI.IsAutoPlay()));
+
 		return [
 			{ clip: left1["info"], rightClip: right1 },
 			{ clip: left1["offset"], rightClip: right2 },
@@ -330,6 +326,8 @@ class DropdownMenu extends MovieClip
 			{ clip: left2["offsetStepSize"] },
 			{ clip: left2["offsetStageOnly"] }
 		];
+		left2["offsetStepSize"].init(getTextInit("$SSL_StepSize", SexLabAPI.GetOffsetStepSize(), true));
+		left2["offsetStageOnly"].init(getTextInit("$SSL_StageOnly", SexLabAPI.GetAdjustStageOnly()));
 		if (positions.length == 0) {
 			return ret;
 		}
@@ -343,6 +341,7 @@ class DropdownMenu extends MovieClip
 			if (position.submissive) {
 				position.name = "[S] " + position.name;
 			}
+			position.clip.init(position);
 			ret.push(position);
 		}
 		for (; i < positionArrObjs.length; i++) {
@@ -352,43 +351,19 @@ class DropdownMenu extends MovieClip
 	}
 	private function getDebugLayout()
 	{
-		return [
-			{ clip: left3["exitMenu"] },
-			{ clip: left3["pauseAnimation"] },
-			{ clip: left3["moveScene"] },
-			{ clip: left3["endScene"] }
-		]
-	}
-
-	private function updateThreadLayout()
-	{
-		right1.updateFields();
-		right2.updateFields();
-		right3.updateFields();
-
-		left1["info"].init(getTextInit("$SSL_SceneInfo", ">", true));
-		left1["offset"].init(getTextInit("$SSL_Offset", ">"));
-		left1["scenes"].init(getTextInit("$SSL_AlternateScenes", ">"));
-		left1["pickRandom"].init(getTextInit("$SSL_PickRandom", ""));
-		left1["toggleAutoplay"].init(getTextInit("$SSL_ToggleAutoplay", SexLabAPI.IsAutoPlay()));
-	}
-	private function updatePositionLayout()
-	{
-		left2["offsetStepSize"].init(getTextInit("$SSL_StepSize", SexLabAPI.GetOffsetStepSize(), true));
-		left2["offsetStageOnly"].init(getTextInit("$SSL_StageOnly", SexLabAPI.GetAdjustStageOnly()));
-		for (var i = 2; i < layout[1].length; i++) {
-			var position = layout[1][i]
-			position.clip.init(position);
-		}
-	}
-	private function updateDebugLayout()
-	{
 		var endKey: String = SexLabAPI.GetHotkeyCombination(KeyType.END);
 		var modesKey: String = SexLabAPI.GetHotkeyCombination(KeyType.MODES);
 		left3["exitMenu"].init(getTextInit("$SSL_ExitMenu", "", true));
 		left3["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation", endKey + " + " + modesKey));
 		left3["moveScene"].init(getTextInit("$SSL_MoveScene"));
 		left3["endScene"].init(getTextInit("$SSL_EndScene", endKey));
+
+		return [
+			{ clip: left3["exitMenu"] },
+			{ clip: left3["pauseAnimation"] },
+			{ clip: left3["moveScene"] },
+			{ clip: left3["endScene"] }
+		]
 	}
 
 	private function toggleStageOnly()
