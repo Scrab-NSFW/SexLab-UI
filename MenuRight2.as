@@ -47,9 +47,14 @@ class MenuRight2 extends MovieClip
 
 	public function updateFields()
 	{
+		var setPrecision:Function = function(number:Number, precision) {
+			precision = Math.pow(10, precision);
+			return Math.round(number * precision)/precision;
+		}
 		furnitureType.init({ name: "$SSL_ActiveFurniture{" + SexLabAPI.GetActiveFurnitureName() + "}" });
 
-		stepSize.init({ name: "$SSL_StepSize", extra: SexLabAPI.GetOffsetStepSize().toString() });
+		var stepSizeValue = SexLabAPI.GetOffsetStepSize();
+		stepSize.init({ name: "$SSL_StepSize", extra: setPrecision(stepSizeValue) });
 		stageOnly.init({ name: "$SSL_StageOnly", extra: SexLabAPI.GetAdjustStageOnly().toString() });
 		resetOffsets.init({ name: "$SSL_ResetOffsets" });
 
