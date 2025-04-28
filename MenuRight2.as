@@ -47,14 +47,10 @@ class MenuRight2 extends MovieClip
 
 	public function updateFields()
 	{
-		var setPrecision:Function = function(number:Number, precision) {
-			precision = Math.pow(10, precision);
-			return Math.round(number * precision)/precision;
-		}
 		furnitureType.init({ name: "$SSL_ActiveFurniture{" + SexLabAPI.GetActiveFurnitureName() + "}" });
 
-		var stepSizeValue = SexLabAPI.GetOffsetStepSize();
-		stepSize.init({ name: "$SSL_StepSize", extra: setPrecision(stepSizeValue) });
+		stepSize.init({ name: "$SSL_StepSize" });
+		stepSize.updateFloatValue(SexLabAPI.GetOffsetStepSize());
 		stageOnly.init({ name: "$SSL_StageOnly", extra: SexLabAPI.GetAdjustStageOnly().toString() });
 		resetOffsets.init({ name: "$SSL_ResetOffsets" });
 
@@ -103,8 +99,7 @@ class MenuRight2 extends MovieClip
 			return true;
 		case KeyType.SELECT:
 			if (selection == stepSize) {
-				SexLabAPI.AdjustOffsetStepSize(!reset)
-				updateFields();
+			  stepSize.updateFloatValue(SexLabAPI.AdjustOffsetStepSize(!reset));
 			} else if (selection == stageOnly) {
 				SexLabAPI.SetAdjustStageOnly(!SexLabAPI.GetAdjustStageOnly());
 				updateFields();

@@ -26,8 +26,7 @@ class MenuEntryOffset extends MovieClip
 		var keyIdx = value.keyIdx = initObj.name.toLowerCase();
 		var offset = SexLabAPI.GetOffset(keyIdx, _referenceId);
 		if (offset != undefined) {
-			trace("Initializing Offset for " + _referenceId + "." + keyIdx + ": " + offset);
-			value.text = offset.toString();
+			setStepSizeText(offset);
 		} else {
 			trace("Initializing Offset for " + _referenceId + "." + keyIdx + ": No value found, setting to 0.0");
 			value.text = "0.0";
@@ -46,16 +45,20 @@ class MenuEntryOffset extends MovieClip
 				this.text = this.text.substring(0, dotIdx2);
 			}
 		};
-		value.onKillFocus = function() {
-			var numValue = parseFloat(this.text);
-			if (isNaN(numValue)) {
-				trace("Adjusting Offset for " + keyIdx + ": Invalid input " + value.text + " , resetting to 0.0");
-				this.text = "0.0";
-				return;
+	}
+
+	public function setStepSizeText(stepSizeArg): Void
+	{
+		var stepSizeValue = stepSizeArg.toString();
+		var pointAt = stepSizeValue.indexOf(".");
+		if (pointAt != -1) {
+			if (stepSizeValue.length - pointAt < 3) {
+				stepSizeValue += "0";
+			} else {
+				stepSizeValue = stepSizeValue.substr(0, pointAt + 3);
 			}
-			trace("Adjusting Offset for " + _referenceId + "." + keyIdx + ": " + numValue);
-			Main.SetOffset(value.keyIdx, numValue, _referenceId);
-		};
+		}
+		value.text = stepSizeValue;
 	}
 
 	public function setSelected(selected): Void
@@ -91,6 +94,15 @@ class MenuEntryOffset extends MovieClip
 		_previousFocus.focusEnabled = bPrevEnabled;
 
 		skse.AllowTextInput(false);
+
+		var numValue = parseFloat(value.text);
+		if (isNaN(numValue)) {
+			trace("Adjusting Offset for " + value.keyIdx + ": Invalid input " + value.text + " , resetting to 0.0");
+			value.text = "0.0";
+		} else {
+			trace("Adjusting Offset for " + _referenceId + "." + value.keyIdx + ": " + numValue);
+			Main.SetOffset(value.keyIdx, numValue, _referenceId);
+		}
 	}
 
 	public function hasFocus()
@@ -115,7 +127,7 @@ class MenuEntryOffset extends MovieClip
 		} else {
 			numValue += stepSizeValue;
 		}
-		value.text = numValue.toString();
+		setStepSizeText(numValue);
 		Main.SetOffset(value.keyIdx, numValue, _referenceId);
 	}
 

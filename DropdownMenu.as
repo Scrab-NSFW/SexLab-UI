@@ -192,7 +192,7 @@ class DropdownMenu extends MovieClip
 					activeClip.updateValue(SexLabAPI.IsAutoPlay());
 					break;
 				case left2["offsetStepSize"]:
-					activeClip.updateValue(SexLabAPI.AdjustOffsetStepSize(!reset));
+					activeClip.updateFloatValue(SexLabAPI.AdjustOffsetStepSize(!reset));
 					break;
 				case left2["offsetStageOnly"]:
 					toggleStageOnly();
@@ -326,7 +326,9 @@ class DropdownMenu extends MovieClip
 			{ clip: left2["offsetStepSize"] },
 			{ clip: left2["offsetStageOnly"] }
 		];
-		left2["offsetStepSize"].init(getTextInit("$SSL_StepSize", SexLabAPI.GetOffsetStepSize(), true));
+		var stepSizeValue = SexLabAPI.GetOffsetStepSize();
+		left2["offsetStepSize"].init(getTextInit("$SSL_StepSize", "", true));
+		left2["offsetStepSize"].updateFloatValue(stepSizeValue);
 		left2["offsetStageOnly"].init(getTextInit("$SSL_StageOnly", SexLabAPI.GetAdjustStageOnly()));
 		if (positions.length == 0) {
 			return ret;

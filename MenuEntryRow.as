@@ -46,6 +46,20 @@ class MenuEntryRow extends skyui.components.list.BasicListEntry
 	{
 		value.text = extra;
 	}
+	
+	public function updateFloatValue(newValue: Number): Void
+	{
+		var stepSizeText = newValue.toString();
+		var pointAt = stepSizeText.indexOf(".");
+		if (pointAt != -1) {
+			if (stepSizeText.length - pointAt < 3) {
+				stepSizeText += "0";
+			} else {
+				stepSizeText = stepSizeText.substr(0, pointAt + 3);
+			}
+		}
+		value.text = stepSizeText;
+	}
 
 	/* BASIC LIST FUNCTIONS */
 
