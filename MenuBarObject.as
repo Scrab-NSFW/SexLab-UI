@@ -19,6 +19,9 @@
 	/* INITIALIZATION */
 	public function MenuBarObject()
 	{
+		text1.text = "$SSL_Thread";
+		text2.text = "$SSL_Positions";
+		text3.text = "$SSL_Debug";
 		textArr = [text1, text2, text3];
 	}
 

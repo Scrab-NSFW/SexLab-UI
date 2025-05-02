@@ -28,6 +28,8 @@
 		spdDownBtn.onRelease = function() {
 			_parent.changeSpeed(false);
 		};
+		
+		tf1.text = "$SSL_Speed";
 	}
 
 	/* FUNCTIONS */
