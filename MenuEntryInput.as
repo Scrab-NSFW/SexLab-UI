@@ -42,7 +42,12 @@ class MenuEntryInput extends MovieClip
 
 	public function setFocus(): Void
 	{
+		if (hasFocus()) {
+			return;
+		}
 		_previousFocus = FocusHandler.instance.getFocus(0);
+		_autoPlay = SexLabAPI.IsAutoPlay();
+		SexLabAPI.ToggleAutoPlay(false);
 		
 		inputField.type = "input";
 		inputField.noTranslate = true;
@@ -61,6 +66,7 @@ class MenuEntryInput extends MovieClip
 		}
 		inputField.type = "dynamic";
 		inputField.selectable = false;
+		SexLabAPI.ToggleAutoPlay(_autoPlay);
 		
 		var bPrevEnabled = _previousFocus.focusEnabled;
 		_previousFocus.focusEnabled = true;

@@ -11,6 +11,7 @@ class MenuEntryOffset extends MovieClip
 	/* PRIVATE VARIABLES */
 	private var _previousFocus;
 	private var _referenceId;
+	private var _autoPlay;
 
 	/* INITIALIZATION */
 	public function MenuEntryOffset()
@@ -68,7 +69,12 @@ class MenuEntryOffset extends MovieClip
 
 	public function setFocus(): Void
 	{
+		if (hasFocus()) {
+			return;
+		}
 		_previousFocus = FocusHandler.instance.getFocus(0);
+		_autoPlay = SexLabAPI.IsAutoPlay();
+		SexLabAPI.ToggleAutoPlay(false);
 		
 		value.type = "input";
 		value.noTranslate = true;
@@ -85,6 +91,7 @@ class MenuEntryOffset extends MovieClip
 		if (!_previousFocus) {
 			return;
 		}
+		SexLabAPI.ToggleAutoPlay(_autoPlay);
 		value.type = "dynamic";
 		value.selectable = false;
 		

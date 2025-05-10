@@ -188,8 +188,11 @@ class DropdownMenu extends MovieClip
 					Main.SetActiveScene("");
 					break;
 				case left1["toggleAutoplay"]:
-					SexLabAPI.ToggleAutoPlay();
-					activeClip.updateValue(SexLabAPI.IsAutoPlay());
+					{
+						var enable = !SexLabAPI.IsAutoPlay();
+						SexLabAPI.ToggleAutoPlay(enable);
+						activeClip.updateValue(enable);
+					}
 					break;
 				case left2["offsetStepSize"]:
 					activeClip.updateFloatValue(SexLabAPI.AdjustOffsetStepSize(!reset));

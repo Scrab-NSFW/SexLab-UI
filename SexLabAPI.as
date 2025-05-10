@@ -11,7 +11,7 @@ intrinsic class SexLabAPI
     static function GetAdjustStageOnly():Boolean;
     static function SetAdjustStageOnly(value: Boolean):Void;
 
-    static function ToggleAutoPlay():Void;
+    static function ToggleAutoPlay(value: Boolean):Void;
     static function IsAutoPlay():Boolean;
 
     static function GetPermutationData(id: Number):String;
