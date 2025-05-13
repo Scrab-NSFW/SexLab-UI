@@ -12,6 +12,7 @@ class MenuEntryInput extends MovieClip
 	public var selectable: Boolean = true;
 
 	/* PRIVATE VARIABLES */
+	private var _autoPlay;
 	private var _previousFocus;
 
 	/* INITIALIZATION */
