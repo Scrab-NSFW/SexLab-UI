@@ -60,10 +60,13 @@ class Settings extends MovieClip
 			slide(activeIdx <= 1 ? 0 : activeIdx - 1);
 			return true;
 		case KeyType.EXTRA2:
-			slide(
-				activeIdx == -1 ? menuSets.length - 1 : 
-				activeIdx == menuSets.length - 1 ? activeIdx : activeIdx + 1
-			);
+			if (activeIdx == -1) {
+				slide(0);
+			} else if (reset) {
+				slide(activeIdx == 0 ? menuSets.length - 1 : activeIdx - 1);
+			} else {
+				slide(activeIdx == menuSets.length - 1 ? 0 : activeIdx + 1);
+			}
 			return true;
 		case KeyType.END:
 			if (activeIdx > -1) {
