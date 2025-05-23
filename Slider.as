@@ -68,7 +68,7 @@ class Slider extends MovieClip
       var added = Math.pow(1.25 * (enjoyment - 100), 0.6) * 1.4;
       ret = HUNDRED_PCT_THRESH + Math.min(added, 100 - HUNDRED_PCT_THRESH);
     }
-    trace("Slider::getMeterPctFromEnjoyment: " + enjoyment + " -> " + ret);
+    // trace("Slider::getMeterPctFromEnjoyment: " + enjoyment + " -> " + ret);
     return Math.min(100, Math.max(ret, 0));
   }
 }

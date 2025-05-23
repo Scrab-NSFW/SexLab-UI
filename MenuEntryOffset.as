@@ -107,7 +107,7 @@ class MenuEntryOffset extends MovieClip
 			trace("Adjusting Offset for " + value.keyIdx + ": Invalid input " + value.text + " , resetting to 0.0");
 			value.text = "0.0";
 		} else {
-			trace("Adjusting Offset for " + _referenceId + "." + value.keyIdx + ": " + numValue);
+			// trace("Adjusting Offset for " + _referenceId + "." + value.keyIdx + ": " + numValue);
 			Main.SetOffset(value.keyIdx, numValue, _referenceId);
 		}
 	}

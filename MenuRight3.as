@@ -25,7 +25,7 @@ class MenuRight3 extends ScrollingListInputEx
 	public function updateFieldsCustom(arr)
 	{
 		clearList();
-		trace("updateFieldsCustom: " + clearList);
+		// trace("updateFieldsCustom: " + clearList);
 		for (var i = 0; i < arr.length; i++) {
 			var obj = arr[i];
 			if (obj == undefined) {
