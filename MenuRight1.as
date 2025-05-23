@@ -36,24 +36,35 @@ class MenuRight1 extends MovieClip
 
 	public function setDefault()
 	{
-		_annotations = annotations.getText();
 		annotations.setSelected(true);
-		annotations.setFocus();
 	}
 
 	public function resetSelection()
 	{
 		annotations.setSelected(false);
-		annotations.endInput();
-		if (_annotations != annotations.getText()) {
-			Main.SetSceneAnnotations(annotations.getText());
-		}
+		exitAnnotations();
 	}
 	
 	public function handleInputEx(keyStr: String, modes: Boolean, reset: Boolean): Boolean
 	{
-		if (keyStr == KeyType.END)
+		if (keyStr == KeyType.SELECT) {
+			_annotations = annotations.getText();
+			annotations.setFocus();
+		} else if (keyStr == KeyType.END) {
+			return exitAnnotations();
+		}
+		return true;
+	}
+
+	private function exitAnnotations()
+	{
+		if (!annotations.hasFocus())
 			return false;
+		
+		annotations.endInput();
+		if (_annotations != annotations.getText()) {
+			Main.SetSceneAnnotations(annotations.getText());
+		}
 		return true;
 	}
 
