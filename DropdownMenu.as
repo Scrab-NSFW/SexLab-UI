@@ -203,6 +203,16 @@ class DropdownMenu extends MovieClip
 				case left3["exitMenu"]:
 					_parent.closeMenu();
 					break;
+				case left3["hideHUD"]:
+					{
+						var enable = !SexLabAPI.GetHUDVisible();
+						SexLabAPI.SetHUDVisible(enable);
+						activeClip.updateValue(enable);
+					}
+					break;
+				case left3["hideUI"]:
+					_root.main._visible = false;
+					break;
 				case left3["pauseAnimation"]:
 					Main.PauseScene();
 					break;
@@ -359,12 +369,16 @@ class DropdownMenu extends MovieClip
 		var endKey: String = SexLabAPI.GetHotkeyCombination(KeyType.END);
 		var modesKey: String = SexLabAPI.GetHotkeyCombination(KeyType.MODES);
 		left3["exitMenu"].init(getTextInit("$SSL_ExitMenu", "", true));
+		left3["hideHUD"].init(getTextInit("$SSL_HideHUD", SexLabAPI.GetHUDVisible()));
+		left3["hideUI"].init(getTextInit("$SSL_HideUI", ""));
 		left3["pauseAnimation"].init(getTextInit("$SSL_PauseAnimation", endKey + " + " + modesKey));
 		left3["moveScene"].init(getTextInit("$SSL_MoveScene"));
 		left3["endScene"].init(getTextInit("$SSL_EndScene", endKey));
 
 		return [
 			{ clip: left3["exitMenu"] },
+			{ clip: left3["hideHUD"]},
+			{ clip: left3["hideUI"] },
 			{ clip: left3["pauseAnimation"] },
 			{ clip: left3["moveScene"] },
 			{ clip: left3["endScene"] }

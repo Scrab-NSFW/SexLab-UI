@@ -142,12 +142,14 @@ class Main extends MovieClip
 	public function handleInputEx(str: String, modes: Boolean, reset: Boolean): Void
 	{
 		trace("Main.handleInputEx(" + str + ", " + modes + ", " + reset + ")");
-		if (settings.handleInputEx(str, modes, reset))
+		if (_visible && settings.handleInputEx(str, modes, reset))
 			return;
 		if (control.handleInputEx(str, modes, reset))
 			return;
 		if (str == KeyType.END) {
-			if (modes) {
+			if (!_visible) {
+				_visible = true;
+			} else if (modes) {
 				PauseScene();
 			} else {
 				EndScene();

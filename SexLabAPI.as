@@ -13,6 +13,8 @@ intrinsic class SexLabAPI
 
     static function ToggleAutoPlay(value: Boolean):Void;
     static function IsAutoPlay():Boolean;
+    static function SetHUDVisible(value: Boolean):Void;
+    static function GetHUDVisible():Boolean;
 
     static function GetPermutationData(id: Number):String;
     static function SelectNextPermutation(id: Number):Void;
